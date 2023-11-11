@@ -13,4 +13,4 @@ Mobile application for management your tasks and your team tasks.
 8. Profile screen
 9. Calendar
 
-1-2 is treated as one. We need 2 more screens.
+
