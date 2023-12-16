@@ -211,5 +211,9 @@ export const styles = StyleSheet.create({
     fontSize:20,
     fontWeight:'regular',
     marginLeft: window.width*0.1
+  },
+  textChats:{
+    color: 'white',
+    fontSize: 14
   }
 });

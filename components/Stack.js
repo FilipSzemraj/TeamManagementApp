@@ -9,7 +9,7 @@ import Profile from './Profile';
 import Settings from './Settings'
 import Informations from './Informations';
 import Theme from './Theme';
-
+import IndividualChats from "./IndividualChats";
 const Stack = createNativeStackNavigator();
 
 const screenOptions ={
@@ -29,6 +29,7 @@ export default function StackNav() {
             <Stack.Screen name="Settings" component={Settings} options={screenOptions}/>
             <Stack.Screen name="Informations" component={Informations} options={screenOptions}/>
             <Stack.Screen name="Theme" component={Theme} options={screenOptions}/>
+            <Stack.Screen name="IndividualChats" component={IndividualChats} options={screenOptions}/>
         </Stack.Navigator>
     );
 }
