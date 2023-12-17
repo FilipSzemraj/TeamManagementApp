@@ -1,0 +1,25 @@
+{
+  "task": [
+    {
+      "id": 4,
+      "name": "Dokończyć projekt",
+      "completed": false
+    },
+    {
+      "id": 6,
+      "name": "Dodawanie sprawdzanie czy nie wyjdzie poza ekran",
+      "completed": false
+    },
+    {
+      "id": 7,
+      "name": "Dokończyć kurs",
+      "completed": false,
+      "location": {
+        "latitude": 50.88654322352222,
+        "longitude": 20.62892701057465,
+        "latitudeDelta": 0.0922,
+        "longitudeDelta": 0.0421
+      }
+    }
+  ]
+}
