@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import FormLogin from './Login';
+import WelcomeScreen from './WelcomePage';
 import MyDrawer from './Drawer';
 import Register from './Register'
 import AddTask from './AddTask';
@@ -21,6 +22,7 @@ const screenOptions ={
 export default function StackNav() {
     return(
         <Stack.Navigator>
+            <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={screenOptions}/>
             <Stack.Screen name="Login" component={FormLogin} options={screenOptions}/>
             <Stack.Screen name="MyDrawer" component={MyDrawer} options={screenOptions}/>
             <Stack.Screen name="Register" component={Register} options={screenOptions}/>

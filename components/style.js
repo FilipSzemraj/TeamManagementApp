@@ -39,6 +39,11 @@ export const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
   },
+  textWelcomePage: {
+    textAlign: 'justify',
+    fontSize: window.height * 0.015,
+    flexWrap: 'wrap',
+  },
   registerButton: {
     height: window.height * 0.06,
     marginRight: -2,
