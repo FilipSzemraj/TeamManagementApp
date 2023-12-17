@@ -211,5 +211,35 @@ export const styles = StyleSheet.create({
     fontSize:20,
     fontWeight:'regular',
     marginLeft: window.width*0.1
-  }
+  },
+  textChatsLine:{
+    color: 'white',
+    fontSize: 16,
+    textAlign:'center',
+    textDecorationLine: 'underline',
+  },
+  textChatsNoLine:{
+    color: 'white',
+    fontSize: 16,
+    textAlign:'center'
+  },
+  messImg:{
+    width: window.width*0.15, 
+    height: window.height*0.075, 
+    marginTop: window.height*0.005,
+    marginRight: window.height*0.02,
+    marginBottom: window.height*0.005
+  },
+  messImgSmall:{
+    width: window.width*0.1, 
+    height: window.height*0.05, 
+    marginTop: window.height*0.005,
+    marginRight: window.height*0.02,
+    marginBottom: window.height*0.005
+  },
+  textChats2:{
+    fontSize: 16,
+    textAlign:'center',
+    width: window.width*0.9
+  },
 });

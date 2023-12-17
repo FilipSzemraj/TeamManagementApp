@@ -5,7 +5,7 @@ import { styles } from './style';
 import { Pressable } from 'native-base';
 const window = Dimensions.get('window');
 
-export default function Settings({navigation}) {
+export default function Theme({navigation}) {
 
   return (
     <View style={{ flex: 1 }}>

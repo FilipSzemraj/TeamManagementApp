@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text, KeyboardAvoidingView, Platform} from 'react-native';
+import { View, Text, KeyboardAvoidingView, Platform, TextInput} from 'react-native';
 import HeaderForDrawer from './headerForDrawer';
 import { Dimensions } from 'react-native';
 import {styles} from './style';
 import axios from 'axios';
 import {Pressable} from 'native-base';
-import { TextInput } from 'react-native';
 const window = Dimensions.get('window');
 
 

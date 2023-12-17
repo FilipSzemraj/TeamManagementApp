@@ -16,7 +16,7 @@ export default function Profile() {
       <HeaderForDrawer navigation={navigation}/>
       <View style={{flex:1}}>
         <View style={{margin:window.height*0.03}}>
-            <Text style={styles.infoTextProfile}>Name</Text>
+            <Text style={styles.infoTextProfile}>Nameeee</Text>
             <Text style={styles.infoTextProfileSpecified}>Karol</Text>
             <Text style={styles.infoTextProfile}>Surname</Text>
             <Text style={styles.infoTextProfileSpecified}>Cioć</Text>

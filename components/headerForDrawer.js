@@ -47,6 +47,6 @@ const styles = StyleSheet.create({
      },
      avatar:{
         margin: window.height*0.02,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
      }
   });

@@ -14,7 +14,7 @@ const [newTaskName, setNewTaskName] = React.useState("");
 
 const addTask = async ()=>{
     try{
-    const response = await axios('http://192.168.0.21:3004/task');
+    const response = await axios('http://192.168.42.168:3004/task');
     const existingTasks = response.data;
     const newTask = {
         id: existingTasks.length === 0 ? 1 : existingTasks[existingTasks.length-1].id+1,
@@ -25,7 +25,7 @@ const addTask = async ()=>{
       console.error('Task name is too short');
       return;
     }
-    await axios.post('http://192.168.0.21:3004/task', newTask)
+    await axios.post('http://192.168.42.168:3004/task', newTask)
     navigation.navigate('MainList');
     }catch(error){
         console.error('Erorr during post new task',error)
