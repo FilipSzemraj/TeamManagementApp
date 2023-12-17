@@ -36,7 +36,7 @@ export default function GroupChats({navigation}) {
               </View>
               <View style={{backgroundColor:'white',flexDirection:'row',alignItems:'center',margin:1,borderRadius:15,height:window.height*0.09}}>
                 <Image alt="mess_img" style={styles.messImg} source={require('../assets/images/Team3.png')}/>
-                  <Pressable onPress={()=> navigation.navigate('Login')}>
+                  <Pressable onPress={()=> navigation.navigate('SpecGroup')}>
                     <Text style={{width:window.width*0.67}}>Hola, como estas</Text>
                   </Pressable>
                   <View style={{flexDirection:'column',alignItems:'center'}}>

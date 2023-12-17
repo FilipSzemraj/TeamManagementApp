@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, Image} from 'react-native';
-import {styles} from './style.js'
-import { Button, Pressable } from "native-base";
-
+import { styles } from './style.js'
+import { Pressable } from "native-base";
+import Icon from 'react-native-vector-icons/FontAwesome5';
 export default function FormLogin({ navigation }) {
 return (
 
@@ -10,12 +10,14 @@ return (
     <View style={styles.loginSection}>
         <Text style={styles.textLogin}>Log In</Text>
         <View style={styles.containerFb}>
-            <Pressable  onPress={()=>{navigation.navigate("MyDrawer")}}>
+            <Pressable style={{flexDirection:'row'}} onPress={()=>{navigation.navigate("MyDrawer")}}>
+                <Icon name="facebook" size={20} color="white" />
                 <Text style={styles.fbText}>Log In with Facebook</Text>
             </Pressable>
         </View>
         <View style={styles.containerGoogle}>
-            <Pressable onPress={()=>{navigation.navigate("MyDrawer")}}>
+            <Pressable style={{flexDirection:'row'}} onPress={()=>{navigation.navigate("MyDrawer")}}>
+                <Icon name="google" size={20} color="black" />
                 <Text style={styles.googleText} >Log In with Google</Text>
             </Pressable>
         </View>

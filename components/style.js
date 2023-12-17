@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
   },
   textSignUp: {
     color: '#000000',
-    fontSize: window.height * 0.018,
+    fontSize: 15,
     fontWeight: '700',
     left: window.width * 0.075,
     letterSpacing: 0,
@@ -90,7 +90,6 @@ export const styles = StyleSheet.create({
   },
   containerFb: {
     margin:10,
-    alignItems: 'flex-start',
     backgroundColor: '#1877f2',
     height: window.height *0.07,
     borderRadius: window.width * 0.025,
@@ -244,7 +243,6 @@ export const styles = StyleSheet.create({
   },
   textChats2:{
     fontSize: 16,
-    textAlign:'center',
     width: window.width*0.9
   },
   page: {

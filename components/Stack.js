@@ -13,6 +13,7 @@ import Theme from './Theme';
 import IndividualChats from "./IndividualChats";
 import GroupChats from './GroupChats';
 import SpecIndividual from "./SpecIndividual";
+import SpecGroup from './SpecGroup';
 const Stack = createNativeStackNavigator();
 
 const screenOptions ={
@@ -36,6 +37,7 @@ export default function StackNav() {
             <Stack.Screen name="IndividualChats" component={IndividualChats} options={screenOptions}/>
             <Stack.Screen name="GroupChats" component={GroupChats} options={screenOptions}/>
             <Stack.Screen name="SpecIndividual" component={SpecIndividual} options={screenOptions}/>
+            <Stack.Screen name="SpecGroup" component={SpecGroup} options={screenOptions}/>
         </Stack.Navigator>
     );
 }

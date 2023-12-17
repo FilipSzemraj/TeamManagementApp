@@ -6,7 +6,7 @@ import { Pressable, Image, TextArea} from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 const window = Dimensions.get('window');
 
-export default function SpecIndividual({navigation}) {
+export default function SpecGroup({navigation}) {
   return (
     <View style={{ flex: 1 ,backgroundColor:'#F1F1F1'}}>
       <HeaderForDrawer navigation={navigation}/>
@@ -16,13 +16,13 @@ export default function SpecIndividual({navigation}) {
             >
             <View style={{height:window.height*0.05,justifyContent:'space-evenly',flexDirection:'row', backgroundColor:'#CDD016'}}>
                 <Pressable style={{justifyContent:'center'}} onPress={()=> navigation.navigate('MainList')}><Image alt="exit_img"source={require('../assets/images/exitButton.png')}/></Pressable>
-                <Pressable style={{borderLeftWidth:1,justifyContent:'center', borderColor:'white',alignItems:'center'}} onPress={()=> navigation.navigate('IndividualChats')}><Text style={styles.textChatsLine}>Individual chats</Text></Pressable>
-                <Pressable style={{borderLeftWidth:1, borderColor:'white', justifyContent:'center'}} onPress={()=> navigation.navigate('GroupChats')}><Text style={styles.textChatsNoLine}>Group chats</Text></Pressable>
+                <Pressable style={{borderLeftWidth:1,justifyContent:'center', borderColor:'white',alignItems:'center'}} onPress={()=> navigation.navigate('IndividualChats')}><Text style={styles.textChatsNoLine}>Individual chats</Text></Pressable>
+                <Pressable style={{borderLeftWidth:1, borderColor:'white', justifyContent:'center'}} onPress={()=> navigation.navigate('GroupChats')}><Text style={styles.textChatsLine}>Group chats</Text></Pressable>
             </View>
             <View style={{backgroundColor:'white',height:window.height*0.06,flexDirection:'row', justifyContent:'center',alignItems:'center', marginBottom:5}}>
-                <Text style={styles.textChats2}>Tupac Shakur</Text>
+                <Text style={styles.textChats2}>Logistic</Text>
                 <Pressable onPress={()=>navigation.goBack()}>
-                    <Image alt="arror_left_img" source={require('../assets/images/arrow_left.png')}/>
+                    <Image alt="arrow_left_img" source={require('../assets/images/arrow_left.png')}/>
                 </Pressable>           
             </View>
             <ScrollView style={{flexGrow:1}}>
