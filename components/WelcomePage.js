@@ -9,7 +9,7 @@ const window = Dimensions.get('window');
 const CircleWithText = ({ text }) => {
     return (
         <View style={{
-            margin: 10,
+            margin: 5,
             width: window.width*0.32,
             height: window.width*0.32,
             backgroundColor: '#00FF00',

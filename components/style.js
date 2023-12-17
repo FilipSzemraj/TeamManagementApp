@@ -234,7 +234,7 @@ export const styles = StyleSheet.create({
     marginTop: window.height*0.033,
   },
   titleDesText: {
-    fontSize: window.height*0.01,
+    fontSize: window.height*0.02,
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
