@@ -39,6 +39,11 @@ export const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
   },
+  textWelcomePage: {
+    textAlign: 'justify',
+    fontSize: window.height * 0.015,
+    flexWrap: 'wrap',
+  },
   registerButton: {
     height: window.height * 0.06,
     marginRight: -2,
@@ -215,5 +220,72 @@ export const styles = StyleSheet.create({
   textChats:{
     color: 'white',
     fontSize: 14
+  },
+  page: {
+    backgroundColor: '#CDD016',
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  headerLogo: {
+    width: window.width,
+    resizeMode: 'contain',
+    marginTop: window.height*0.033,
+  },
+  titleDesText: {
+    fontSize: window.height*0.01,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+  },
+  titleText: {
+    fontSize: window.height*0.05,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+  },
+  circleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  circleText: {
+    textAlign: 'center',
+    fontSize: window.height*0.015,
+    margin: 5,
+  },
+  continueButton: {
+    backgroundColor: '#E12828',
+    borderRadius: 22,
+    marginBottom: 15,
+    width: window.width*0.32,
+    height: window.height*0.053,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+  },
+  continueText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  bodyText: {
+    textAlign: 'justify',
+    fontSize: window.height*0.0125,
+    color: 'black',
+    flex: 1,
+    marginHorizontal: 10,
+  },
+  upperContainerText: {
+    marginVertical: 20,
+
   }
 });
