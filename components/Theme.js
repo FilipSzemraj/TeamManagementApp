@@ -16,7 +16,7 @@ export default function Theme({navigation}) {
             <Text style={{ marginLeft:window.width*0.35, fontSize:18, fontWeight:'500', color:'black' }}>Ustawienia</Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
-            <Pressable onPress={()=> navigation.navigate('MainList')}><Text style={{fontSize:18, fontWeight:'500', color:'#E12828'}}>OK</Text></Pressable>
+            <Pressable onPress={()=> navigation.goBack()}><Text style={{fontSize:18, fontWeight:'500', color:'#E12828'}}>OK</Text></Pressable>
           </View>
         </View>
       </View>

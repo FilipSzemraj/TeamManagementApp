@@ -17,7 +17,7 @@ return (
         </View>
         <View style={styles.containerGoogle}>
             <Pressable style={{flexDirection:'row'}} onPress={()=>{navigation.navigate("MyDrawer")}}>
-                <Icon name="google" size={20} color="black" />
+                <Image alt="google_img" source={require('../assets/images/google.png')}/>
                 <Text style={styles.googleText} >Log In with Google</Text>
             </Pressable>
         </View>

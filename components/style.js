@@ -243,7 +243,8 @@ export const styles = StyleSheet.create({
   },
   textChats2:{
     fontSize: 16,
-    width: window.width*0.9
+    width: window.width*0.9,
+    textAlign:'center'
   },
   page: {
     backgroundColor: '#CDD016',
@@ -311,5 +312,21 @@ export const styles = StyleSheet.create({
   upperContainerText: {
     marginVertical: 20,
 
+  },
+  dotsMenu:{
+    position: 'absolute', 
+    top: window.height*0.55, 
+    right: window.width*0.01, 
+    width: window.width*0.4, 
+    height: window.height*0.2, 
+    resizeMode: 'contain',
+  },
+  priorityMenu:{
+    position: 'absolute', 
+    top: window.height*0.55, 
+    right: window.width*0.01, 
+    width: window.width*0.4, 
+    height: window.height*0.2, 
+    resizeMode: 'contain',
   }
 });
