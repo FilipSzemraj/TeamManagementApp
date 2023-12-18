@@ -14,10 +14,10 @@ export default function SpecGroup({navigation}) {
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
               style={{ flex: 1, justifyContent: 'flex-start', backgroundColor: '#F1F1F1' }}
             >
-            <View style={{height:window.height*0.05,justifyContent:'space-evenly',flexDirection:'row', backgroundColor:'#CDD016'}}>
-                <Pressable style={{justifyContent:'center'}} onPress={()=> navigation.navigate('MainList')}><Image alt="exit_img"source={require('../assets/images/exitButton.png')}/></Pressable>
-                <Pressable style={{borderLeftWidth:1,justifyContent:'center', borderColor:'white',alignItems:'center'}} onPress={()=> navigation.navigate('IndividualChats')}><Text style={styles.textChatsNoLine}>Individual chats</Text></Pressable>
-                <Pressable style={{borderLeftWidth:1, borderColor:'white', justifyContent:'center'}} onPress={()=> navigation.navigate('GroupChats')}><Text style={styles.textChatsLine}>Group chats</Text></Pressable>
+            <View style={styles.wrapperChatPress}>
+                <Pressable style={styles.containerXChat} onPress={()=> navigation.navigate('MainList')}><Image alt="exit_img"source={require('../assets/images/exitButton.png')}/></Pressable>
+                <Pressable style={styles.containerPressChat} onPress={()=> navigation.navigate('IndividualChats')}><Text style={styles.textChatsNoLine}>Individual chats</Text></Pressable>
+                <Pressable style={styles.containerPressChat} onPress={()=> navigation.navigate('GroupChats')}><Text style={styles.textChatsLine}>Group chats</Text></Pressable>
             </View>
             <View style={{backgroundColor:'white',height:window.height*0.06,flexDirection:'row', justifyContent:'center',alignItems:'center', marginBottom:5}}>
                 <Text style={styles.textChats2}>Logistic</Text>

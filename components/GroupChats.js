@@ -11,10 +11,10 @@ export default function GroupChats({navigation}) {
     <View style={{ flex: 1 ,backgroundColor:'#F1F1F1'}}>
       <HeaderForDrawer navigation={navigation}/>
         <View style={{flex:1,justifyContent:'flex-start'}}>
-            <View style={{height:window.height*0.05,justifyContent:'space-evenly',flexDirection:'row', backgroundColor:'#CDD016'}}>
-                <Pressable style={{justifyContent:'center'}} onPress={()=> navigation.navigate('MainList')}><Image alt="exit_img"source={require('../assets/images/exitButton.png')}/></Pressable>
-                <Pressable style={{borderLeftWidth:1,justifyContent:'center', borderColor:'white',alignItems:'center'}} onPress={()=> navigation.navigate('IndividualChats')}><Text style={styles.textChatsNoLine}>Individual chats</Text></Pressable>
-                <Pressable style={{borderLeftWidth:1, borderColor:'white', justifyContent:'center'}} onPress={()=> navigation.navigate('GroupChats')}><Text style={styles.textChatsLine}>Group chats</Text></Pressable>
+            <View style={styles.wrapperChatPress}>
+                <Pressable style={styles.containerXChat} onPress={()=> navigation.navigate('MainList')}><Image alt="exit_img"source={require('../assets/images/exitButton.png')}/></Pressable>
+                <Pressable style={styles.containerPressChat} onPress={()=> navigation.navigate('IndividualChats')}><Text style={styles.textChatsNoLine}>Individual chats</Text></Pressable>
+                <Pressable style={styles.containerPressChat} onPress={()=> navigation.navigate('GroupChats')}><Text style={styles.textChatsLine}>Group chats</Text></Pressable>
             </View>
             <Text style={{backgroundColor:'white',margin:2,fontSize:16,width:window.width*1, textAlign:'center'}}>Name of the current chat</Text>
             <View style={{flex:1,justifyContent:'flex-start'}}>

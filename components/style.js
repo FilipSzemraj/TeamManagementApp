@@ -188,7 +188,7 @@ export const styles = StyleSheet.create({
   buttonsAddUser:{
     justifyContent:'center',
     alignItems:'center',
-    height: window.height * 0.06,
+    height: window.height * 0.08,
     width: window.width * 0.35,
     backgroundColor:'#E12828',
     borderRadius: 10
@@ -328,5 +328,63 @@ export const styles = StyleSheet.create({
     width: window.width*0.4, 
     height: window.height*0.2, 
     resizeMode: 'contain',
+  },
+  containerHeader:{
+    backgroundColor: '#CDD016',
+    flex: 0.15,
+    height: window.height*0.13,
+    width: window.width*1,
+    marginBottom: 1
+},
+container2:{
+    flexDirection:'row',
+    justifyContent: 'space-between',
+    alignItems:'center',
+    height: window.height*0.13,
+    width: window.width*1,
+    margin: window.height*0.01,
+}, 
+textHeader:{
+    fontWeight: 'bold',
+    color: '#ffffff',
+    fontSize: 20
+},
+headerLogo2:{
+    width: window.width*0.29, 
+    height: window.height*0.07, 
+    borderRadius: 20, 
+    margin: window.height*0.01,
+    
+ },
+ avatar:{
+    margin: window.height*0.02,
+    resizeMode: 'contain',
+ },
+ uploadContainer:{
+    justifyContent:'space-evenly',
+    flexDirection:'row',
+    alignItems:'center',
+    marginBottom:3
+ },
+  text:{
+    fontSize:16
+  },
+  containerPressChat:{
+    flex:1,
+    borderLeftWidth:1, 
+    borderColor:'white', 
+    justifyContent:'center', 
+    alignItems:'center'
+  },
+  containerXChat:{
+    flex:0.4,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  wrapperChatPress:{
+    height:window.height*0.07,
+    justifyContent:'space-evenly',
+    flexDirection:'row', 
+    backgroundColor:'#CDD016'
   }
 });
