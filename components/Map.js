@@ -57,12 +57,6 @@ export default function Map({ navigation }) {
         }, [])
     );
 
-    /*const [mapRegion, setMapRegion] = useState({
-        latitude: 50.871731508006015,
-        longitude: 20.631308086522893,
-        latitudeDelta: 0.0222,
-        longitudeDelta: 0.0121,
-    });*/
 
     const addLocationToTask = (taskId, location) => {
         setTasks(currentTasks => currentTasks.map(task => {
