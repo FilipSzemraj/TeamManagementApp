@@ -12,7 +12,7 @@ export default function MainList({ navigation }) {
 
   const getData = async () => {
     try {
-      const response = await axios.get("http://192.168.0.21:3004/task");
+      const response = await axios.get("http://192.168.1.30:3004/task");
       setTasks(response.data);
     } catch (error) {
       console.error("Error while getting data", error);
@@ -29,7 +29,7 @@ export default function MainList({ navigation }) {
 
   const handleRadio = async (taskId)=>{
     try {
-      await axios.delete(`http://192.168.0.21:3004/task/${taskId}`);
+      await axios.delete(`http://192.168.1.30:3004/task/${taskId}`);
       const updatedTasks = tasks.filter((task) => task.id !== taskId);
       setTasks(updatedTasks);
     } catch (error) {
