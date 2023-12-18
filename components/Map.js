@@ -3,6 +3,8 @@ import MapView, {Marker} from 'react-native-maps';
 import {StyleSheet, View, Text, Image, Dimensions, Button, TouchableOpacity, TextInput} from 'react-native';
 import * as Location from 'expo-location';
 import colors from '../assets/colors/colors'
+import axios from "axios";
+import {useFocusEffect} from "@react-navigation/native";
 
 const window = Dimensions.get('window');
 
@@ -35,12 +37,56 @@ const AddButton = ({ onPress }) => {
 
 export default function Map({ navigation }) {
 
-    const [mapRegion, setMapRegion] = useState({
+    const [tasks, setTasks] = useState([]);
+    const [mapRegion, setMapRegion] = useState(null);
+
+    const getData = async () => {
+        try {
+            const response = await axios.get("http://192.168.1.30:3004/task");
+            setTasks(response.data);
+        } catch (error) {
+            console.error("Error while getting data", error);
+        }
+    };
+
+
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getData();
+        }, [])
+    );
+
+    /*const [mapRegion, setMapRegion] = useState({
         latitude: 50.871731508006015,
         longitude: 20.631308086522893,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-    })
+        latitudeDelta: 0.0222,
+        longitudeDelta: 0.0121,
+    });*/
+
+    const addLocationToTask = (taskId, location) => {
+        setTasks(currentTasks => currentTasks.map(task => {
+            if (task.id === taskId) {
+                return { ...task, location };
+            }
+            return task;
+        }));
+    };
+
+    const renderMarkers = () => {
+        return tasks
+            .filter(task => task.location)
+            .map(task => (
+                <Marker
+                    key={task.id}
+                    coordinate={{
+                        latitude: task.location.latitude,
+                        longitude: task.location.longitude
+                    }}
+                    title={task.name}
+                />
+            ));
+    };
 
     const userLocation = async() => {
         let{status} = await Location.requestForegroundPermissionsAsync();
@@ -51,8 +97,8 @@ export default function Map({ navigation }) {
         setMapRegion({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            latitudeDelta: 0.0222,
+            longitudeDelta: 0.0121,
         });
         console.log(location.coords.latitude, location.coords.longitude);
     }
@@ -62,7 +108,6 @@ export default function Map({ navigation }) {
     }, [])
 
     return (
-
         <View style={styles.window}>
             <View style={styles.header}>
 
@@ -71,7 +116,7 @@ export default function Map({ navigation }) {
                 <SearchBar/>
                 <MapView style={styles.container}
                          region={mapRegion}>
-                    <Marker coordinate={mapRegion} title='Marker' />
+                    {renderMarkers()}
                 </MapView>
                 <AddButton/>
             </View>
