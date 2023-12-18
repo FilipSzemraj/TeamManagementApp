@@ -1,8 +1,5 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, Pressable } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { TextInput } from 'react-native-gesture-handler';
-import { CommonActions } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { Dimensions } from "react-native";
 import { RadioButton } from 'react-native-paper';
@@ -10,7 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 const window = Dimensions.get("window");
 
-export default function MainList({ navigation, route }) {
+export default function MainList({ navigation }) {
   const [tasks, setTasks] = useState([]);
 
   const getData = async () => {
@@ -81,7 +78,8 @@ const styles = StyleSheet.create({
     width: window.width * 0.3,    
   },
   imgAdd: {
-    height: window.height * 0.15,
+    height: window.height * 0.12,
     width: window.width * 0.3,
+    resizeMode:'contain'
   }
 });

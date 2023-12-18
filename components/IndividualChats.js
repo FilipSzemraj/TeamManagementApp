@@ -11,10 +11,10 @@ export default function IndividualChats({navigation}) {
     <View style={{ flex: 1 ,backgroundColor:'#F1F1F1'}}>
       <HeaderForDrawer navigation={navigation}/>
         <View style={{flex:1,justifyContent:'flex-start'}}>
-            <View style={{height:window.height*0.05,justifyContent:'space-evenly',flexDirection:'row', backgroundColor:'#CDD016'}}>
-                <Pressable style={{justifyContent:'center'}} onPress={()=> navigation.navigate('MainList')}><Image alt="exit_img"source={require('../assets/images/exitButton.png')}/></Pressable>
-                <Pressable style={{borderLeftWidth:1,justifyContent:'center', borderColor:'white',alignItems:'center'}} onPress={()=> navigation.navigate('IndividualChats')}><Text style={styles.textChatsLine}>Individual chats</Text></Pressable>
-                <Pressable style={{borderLeftWidth:1, borderColor:'white', justifyContent:'center'}} onPress={()=> navigation.navigate('GroupChats')}><Text style={styles.textChatsNoLine}>Group chats</Text></Pressable>
+            <View style={styles.wrapperChatPress}>
+                <Pressable style={styles.containerXChat} onPress={()=> navigation.navigate('MainList')}><Image alt="exit_img"source={require('../assets/images/exitButton.png')}/></Pressable>
+                <Pressable style={styles.containerPressChat} onPress={()=> navigation.navigate('IndividualChats')}><Text style={styles.textChatsLine}>Individual chats</Text></Pressable>
+                <Pressable style={styles.containerPressChat} onPress={()=> navigation.navigate('GroupChats')}><Text style={styles.textChatsNoLine}>Group chats</Text></Pressable>
             </View>
             <Text style={{backgroundColor:'white',margin:2,fontSize:16,width:window.width*1, textAlign:'center'}}>Name of the current chat</Text>
             <View style={{flex:1,justifyContent:'flex-start'}}>
@@ -27,7 +27,7 @@ export default function IndividualChats({navigation}) {
                   </View>
               </View>
               <View style={{backgroundColor:'white',flexDirection:'row',alignItems:'center',margin:1,borderRadius:15,height:window.height*0.09}}>
-                <Image alt="mess_img" style={styles.messImg} source={require('../assets/images/profile.png')}/>
+                <Image alt="mess_img" style={styles.messImg} source={require('../assets/images/profile_image2.png')}/>
                   <Text style={{width:window.width*0.67}}>Just hangin around...</Text>
                   <View style={{flexDirection:'column',alignItems:'center'}}>
                   <Text style={{fontSize:9}}>17.12.2023</Text>
@@ -43,10 +43,9 @@ export default function IndividualChats({navigation}) {
                   <Text style={{fontSize:9}}>17.12.2023</Text>
                   <Icon name="envelope" size={20} color="black" />
                   </View>
-                  
               </View>
               <View style={{backgroundColor:'white',flexDirection:'row',alignItems:'center',margin:1,borderRadius:15,height:window.height*0.09}}>
-                <Image alt="mess_img" style={styles.messImg} source={require('../assets/images/profile.png')}/>
+                <Image alt="mess_img" style={styles.messImg} source={require('../assets/images/profile_image2.png')}/>
                   <Text style={{width:window.width*0.67}}>Muchas gracias afficion</Text>
                   <View style={{flexDirection:'column',alignItems:'center'}}>
                   <Text style={{fontSize:9}}>17.12.2023</Text>
