@@ -1,0 +1,32 @@
+{
+  "task": [
+    {
+      "id": 1,
+      "name": "Kupić prezent siostrze",
+      "completed": false,
+      "date": "2024-01-24",
+      "priority": 1
+    },
+    {
+      "id": 2,
+      "name": "Essa sound remix",
+      "completed": false,
+      "date": "2024-01-21",
+      "priority": 1
+    },
+    {
+      "id": 3,
+      "name": "Zrobić 200 w martwym ess",
+      "completed": false,
+      "date": "2024-01-22",
+      "priority": 3
+    },
+    {
+      "id": 4,
+      "name": "Kupić gruza",
+      "completed": false,
+      "date": "2024-01-20",
+      "priority": 2
+    }
+  ]
+}

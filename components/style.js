@@ -315,11 +315,14 @@ export const styles = StyleSheet.create({
   },
   dotsMenu:{
     position: 'absolute', 
-    top: window.height*0.55, 
+    top: window.height*0.57, 
     right: window.width*0.01, 
-    width: window.width*0.4, 
-    height: window.height*0.2, 
+    width: window.width*0.38, 
+    height: window.height*0.15, 
     resizeMode: 'contain',
+    borderWidth:0.5,
+    borderRadius: 10,
+    padding: 10,
   },
   priorityMenu:{
     position: 'absolute', 
@@ -386,5 +389,13 @@ headerLogo2:{
     justifyContent:'space-evenly',
     flexDirection:'row', 
     backgroundColor:'#CDD016'
-  }
+  },
+  iconsContainer: {
+    position: 'absolute',
+    bottom: window.height*0.05,
+    right: 20,
+  },
+  icon: {
+    marginVertical: 5,
+  },
 });

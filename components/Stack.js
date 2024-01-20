@@ -15,6 +15,7 @@ import GroupChats from './GroupChats';
 import SpecIndividual from "./SpecIndividual";
 import SpecGroup from './SpecGroup';
 import Map from './Map';
+import Camera from './Camera';
 const Stack = createNativeStackNavigator();
 
 const screenOptions ={
@@ -40,6 +41,7 @@ export default function StackNav() {
             <Stack.Screen name="SpecIndividual" component={SpecIndividual} options={screenOptions}/>
             <Stack.Screen name="SpecGroup" component={SpecGroup} options={screenOptions}/>
             <Stack.Screen name="Map" component={Map} options={screenOptions}/>
+            <Stack.Screen name="Camera" component={Camera} options={screenOptions}/>
         </Stack.Navigator>
     );
 }

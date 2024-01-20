@@ -18,7 +18,7 @@ const SearchBar = ({ onSearchPress }) => {
             <TouchableOpacity onPress={onSearchPress}>
                 <Image
                     style={styles.searchIcon}
-                    source={require('../assets/images/searchLoop.png')} // Replace with the actual path to your search icon
+                    source={require('../assets/images/searchLoop.png')} 
                 />
             </TouchableOpacity>
         </View>
@@ -42,7 +42,7 @@ export default function Map({ navigation }) {
 
     const getData = async () => {
         try {
-            const response = await axios.get("http://192.168.1.30:3004/task");
+            const response = await axios.get("http://192.168.0.21:3004/task");
             setTasks(response.data);
         } catch (error) {
             console.error("Error while getting data", error);

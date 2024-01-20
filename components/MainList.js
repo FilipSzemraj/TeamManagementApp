@@ -4,16 +4,21 @@ import axios from 'axios';
 import { Dimensions } from "react-native";
 import { RadioButton } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
+import { Calendar } from 'react-native-calendars';
 
 const window = Dimensions.get("window");
 
 export default function MainList({ navigation }) {
   const [tasks, setTasks] = useState([]);
+  const [showCalendar, setShowCalendar] = React.useState(false);
+  const [taskDate, setTaskDate] = React.useState(new Date().toISOString().split('T')[0]);
+
 
   const getData = async () => {
     try {
-      const response = await axios.get("http://192.168.1.30:3004/task");
-      setTasks(response.data);
+      const response = await axios.get("http://192.168.0.21:3004/task");
+      const filteredTasks = response.data.filter(task => task.date === taskDate)
+      setTasks(filteredTasks);
     } catch (error) {
       console.error("Error while getting data", error);
     }
@@ -24,12 +29,12 @@ export default function MainList({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       getData();
-    }, [])
+    }, [taskDate])
   );
 
   const handleRadio = async (taskId)=>{
     try {
-      await axios.delete(`http://192.168.1.30:3004/task/${taskId}`);
+      await axios.delete(`http://192.168.0.21:3004/task/${taskId}`);
       const updatedTasks = tasks.filter((task) => task.id !== taskId);
       setTasks(updatedTasks);
     } catch (error) {
@@ -39,13 +44,32 @@ export default function MainList({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {tasks.map((singleTask) => (
-        <View key={singleTask.id} style={styles.row}>
-          <Text style={styles.text}>{singleTask.name}</Text>
-          <RadioButton value={singleTask.completed} status={singleTask.completed ? 'checked' : 'unchecked'}
-          onPress={()=> handleRadio(singleTask.id)}/>
-        </View>
-      ))}
+      <Pressable onPress={()=> setShowCalendar(!showCalendar)}>
+        <Text style={{textAlign:'center',fontSize: 14, margin:5}}>{taskDate}</Text>
+      </Pressable>
+      { showCalendar ?
+      <View>
+        <Calendar
+        onDayPress={(day)=>
+          {setTaskDate(day.dateString);setShowCalendar(!showCalendar);
+        }}
+        style={{height: window.height*0.55,}}/>
+      </View> : null
+      }
+      {tasks.length > 0 ? (
+        tasks.map((singleTask) => (
+          <View key={singleTask.id} style={styles.row}>
+            <Text style={styles.text}>{singleTask.name}</Text>
+            <RadioButton
+              value="checked"
+              status={singleTask.completed ? 'checked' : 'unchecked'}
+              onPress={() => handleRadio(singleTask.id)}
+            />
+          </View>
+        ))
+      ) : (
+        <Text style={styles.noTasks}>Brak zadań w tym dniu</Text>
+      )}
       <Pressable style={styles.addCircle} onPress={()=> navigation.navigate("AddTask")}>
         <Image style={styles.imgAdd} source={require('../assets/images/circle_add.png')}/>
       </Pressable>
@@ -58,28 +82,47 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "flex-start",
+    padding: 10
   },
   row: {
-    margin: window.height * 0.01,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    elevation: 3,
+    marginBottom: 5,
   },
   text: {
-    marginLeft: window.width * 0.2,
-    color: '#000000',
-    fontSize: 20,
-    width: window.width*0.68
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#333333',
   },
   addCircle: {
     position: 'absolute',
-    bottom: 0,  
-    right: 0,   
-    height: window.height * 0.15,
-    width: window.width * 0.3,    
+    bottom: 20,
+    right: 20,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
   },
   imgAdd: {
-    height: window.height * 0.12,
-    width: window.width * 0.3,
-    resizeMode:'contain'
-  }
+    height: 70,
+    width: 70,
+    resizeMode: 'contain',
+  },
+  noTasks: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 20,
+    color: '#666666',
+  },
 });

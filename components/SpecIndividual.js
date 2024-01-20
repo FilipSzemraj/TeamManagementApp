@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Dimensions, KeyboardAvoidingView, ScrollView} from 'react-native';
 import HeaderForDrawer from './headerForDrawer';
 import {styles} from './style';
 import { Pressable, Image, TextArea} from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Keyboard } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 const window = Dimensions.get('window');
 
 export default function SpecIndividual({navigation}) {
+  const [showMenu, setShowMenu] = useState(false);
+
+  const toggleMenu = () => {
+    Keyboard.dismiss();
+    setShowMenu(!showMenu); 
+    console.log(showMenu);
+  };
+
   return (
-    <View style={{ flex: 1 ,backgroundColor:'#F1F1F1'}}>
+    <GestureHandlerRootView style={{ flex: 1 ,backgroundColor:'#F1F1F1'}}>
       <HeaderForDrawer navigation={navigation}/>
         <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -56,10 +67,25 @@ export default function SpecIndividual({navigation}) {
             mx="auto"
             w="90%"
             />
-            <Image alt="square_icon_chat" source={require('../assets/images/darhboard.png')}/>
+            <TouchableOpacity onPress={toggleMenu}>
+              <Image alt="square_icon_chat" source={require('../assets/images/darhboard.png')}/>
+            </TouchableOpacity>
+            {showMenu ? 
+            <View style={styles.iconsContainer}>
+              <Pressable onPress={() => navigation.navigate('Camera')}>
+                <Image style={styles.icon} alt="camera_icon" source={require('../assets/images/camera.png')}/>
+              </Pressable>
+              <Pressable>
+                <Image style={styles.icon} alt="upload_icon" source={require('../assets/images/load_file.png')}/> 
+              </Pressable>
+              <Pressable onPress={()=> navigation.navigate('Map')}>
+                <Image style={styles.icon} alt="localization_icon" source={require('../assets/images/localization.png')}/> 
+              </Pressable>
+            </View>
+            : null}
             <Icon name="paper-plane" size={20} color="black" />
         </View>
     </KeyboardAvoidingView>
-    </View>
+    </GestureHandlerRootView>
   );
 }
