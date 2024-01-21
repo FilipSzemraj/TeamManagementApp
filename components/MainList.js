@@ -5,6 +5,7 @@ import { Dimensions } from "react-native";
 import { RadioButton } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { Calendar } from 'react-native-calendars';
+import { useUserContext } from './UserContext';
 
 const window = Dimensions.get("window");
 
@@ -12,11 +13,12 @@ export default function MainList({ navigation }) {
   const [tasks, setTasks] = useState([]);
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [taskDate, setTaskDate] = React.useState(new Date().toISOString().split('T')[0]);
+  const { userInfo } = useUserContext();
 
 
   const getData = async () => {
     try {
-      const response = await axios.get("http://192.168.0.21:3004/task");
+      const response = await axios.get("http://192.168.1.30:3004/task");
       const filteredTasks = response.data.filter(task => task.date === taskDate)
       setTasks(filteredTasks);
     } catch (error) {
@@ -34,13 +36,14 @@ export default function MainList({ navigation }) {
 
   const handleRadio = async (taskId)=>{
     try {
-      await axios.delete(`http://192.168.0.21:3004/task/${taskId}`);
+      await axios.delete(`http://192.168.1.30:3004/task/${taskId}`);
       const updatedTasks = tasks.filter((task) => task.id !== taskId);
       setTasks(updatedTasks);
     } catch (error) {
       console.error('error while deleting task', error);
     }
   }
+
 
   return (
     <View style={styles.container}>
@@ -73,6 +76,17 @@ export default function MainList({ navigation }) {
       <Pressable style={styles.addCircle} onPress={()=> navigation.navigate("AddTask")}>
         <Image style={styles.imgAdd} source={require('../assets/images/circle_add.png')}/>
       </Pressable>
+      <View>
+        {userInfo ? (
+            <>
+              {/*<Text>{JSON.stringify(userInfo)}</Text>*/}
+              <Text>Logged in as: {userInfo.user.givenName}</Text>
+              <Text>Email: {userInfo.user.email}</Text>
+            </>
+        ) : (
+            <Text>User is not logged in</Text>
+        )}
+      </View>
     </View>
   );
 }

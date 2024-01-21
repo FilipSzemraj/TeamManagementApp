@@ -1,4 +1,4 @@
-{
+export default {
   "expo": {
     "name": "teammanagmentapp",
     "slug": "teammanagmentapp",
@@ -11,20 +11,32 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      "@react-native-google-signin/google-signin",
+    ],
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.teammanagmentapp",
+      "googleServicesFile": process.env.GOOGLE_SERVICES_INFOPLIST,
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.teammanagmentapp",
+      "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "66474d44-21d3-4157-aa18-0b7b9f600182"
+      }
     }
   },
   "plugins": [
