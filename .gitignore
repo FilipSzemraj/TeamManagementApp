@@ -16,6 +16,15 @@ web-build/
 *.key
 *.mobileprovision
 
+# Native directories
+android/
+ios/
+
+# Firebase config files
+google-services.json
+GoogleService-Info.plist
+
+
 # Metro
 .metro-health-check*
 

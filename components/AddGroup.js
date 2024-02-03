@@ -8,13 +8,37 @@ import { TextInput } from 'react-native';
 import { Select, CheckIcon, Image } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Keyboard } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const window = Dimensions.get('window');
 
 
 export default function AddGroup({ navigation }) {
     const [service, setService] = React.useState("");
     const [showUpload, setShowUpload] = React.useState(false);
+    const [friends, setFriends] = React.useState([]);
 
+    const fetchFriends = async () => {
+        try {
+          const friendsJson = await AsyncStorage.getItem('friends');
+          const friends = friendsJson != null ? JSON.parse(friendsJson) : [];
+          console.log(friends);
+          return friends;
+        } catch (error) {
+          console.error('Error fetching friends from AsyncStorage', error);
+          return [];
+        }
+    };
+    
+    
+    React.useEffect(() => {
+        const loadFriends = async () => {
+          const fetchedFriends = await fetchFriends();
+          setFriends(fetchedFriends);
+        };
+      
+        loadFriends();
+    }, []);
+      
 
     const toggleUpload = () => {
         Keyboard.dismiss();
@@ -35,17 +59,26 @@ export default function AddGroup({ navigation }) {
                 <View style={styles.containerInputAddFriend}>
                     <TextInput style={styles.textNameFriend} placeholder='Enter group location'/>
                 </View>
-            <View style={{marginTop:window.height*0.02 ,borderRadius:10, backgroundColor:'white'}}>
-                <Select selectedValue={service} minWidth="200" width={window.width*0.8} accessibilityLabel="Choose Members" placeholder="Choose Members" _selectedItem={{
+                <View style={{marginTop:window.height*0.02 ,borderRadius:10, backgroundColor:'white'}}>
+                <Select
+                    selectedValue={service}
+                    minWidth="200"
+                    width={window.width*0.8}
+                    accessibilityLabel="Choose Members"
+                    placeholder="Choose Members"
+                    _selectedItem={{
                     bg: "teal.600",
                     endIcon: <CheckIcon style={{backgroundColor:'white'}} size="5" />
-                }} 
-                    mt={1} onValueChange={itemValue => setService(itemValue)}>
-                    <Select.Item label="Filip Szemraj" value="ux" />
-                    <Select.Item label="Tupac Shakur" value="web" />
-                    <Select.Item label="Jakub Kubanczyk" value="cross" />
+                    }}
+                    mt={1}
+                    onValueChange={itemValue => setService(itemValue)}
+                >
+                    {friends.map((friend, index) => (
+                    <Select.Item style={{color:"black", backgroundColor:'white'}} key={index} label={friend.name} value={friend.name} />
+                    ))}
                 </Select>
-            </View>
+                </View>
+
             </View>
             <View style={styles.uploadContainer}>
                 <Pressable onPress={toggleUpload}>

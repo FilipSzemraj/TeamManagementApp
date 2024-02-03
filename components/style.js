@@ -359,10 +359,6 @@ headerLogo2:{
     margin: window.height*0.01,
     
  },
- avatar:{
-    margin: window.height*0.02,
-    resizeMode: 'contain',
- },
  uploadContainer:{
     justifyContent:'space-evenly',
     flexDirection:'row',
@@ -397,5 +393,12 @@ headerLogo2:{
   },
   icon: {
     marginVertical: 5,
+  },
+  userPhoto: {
+    width: window.width*0.2,
+    height: window.height*0.1,
+    borderRadius: 50,
+    marginRight: 20,
+    resizeMode:'contain'
   },
 });

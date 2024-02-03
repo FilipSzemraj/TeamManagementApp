@@ -8,25 +8,25 @@
       "priority": 1
     },
     {
-      "id": 2,
-      "name": "Essa sound remix",
-      "completed": false,
-      "date": "2024-01-21",
-      "priority": 1
-    },
-    {
       "id": 3,
-      "name": "Zrobić 200 w martwym ess",
+      "name": "Zadanie 2",
       "completed": false,
       "date": "2024-01-22",
       "priority": 3
     },
     {
-      "id": 4,
-      "name": "Kupić gruza",
+      "id": 5,
+      "name": "Nowe zadanie",
       "completed": false,
-      "date": "2024-01-20",
-      "priority": 2
+      "date": "2024-01-22",
+      "priority": 1
+    },
+    {
+      "id": 6,
+      "name": "Zadanie",
+      "completed": false,
+      "date": "2024-01-22",
+      "priority": 1
     }
   ]
 }

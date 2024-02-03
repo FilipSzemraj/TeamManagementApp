@@ -1,11 +1,26 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import { Dimensions } from 'react-native';
 import { styles } from './style';
 import { Pressable } from 'native-base';
+import { useUserContext } from './UserContext';
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 const window = Dimensions.get('window');
 
+
 export default function Settings({navigation}) {
+  const { userInfo, setUserInfo } = useUserContext();
+
+    const logout = async () => {
+        try {
+            await GoogleSignin.revokeAccess();
+            await GoogleSignin.signOut();
+            setUserInfo(); // Resetowanie stanu użytkownika
+            navigation.popToTop(); // Przekierowanie do głównego ekranu
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
   return (
     <View style={{ flex: 1 }}>
@@ -29,13 +44,13 @@ export default function Settings({navigation}) {
         </Pressable>
       </View>
       <View style={{ flex: 0.52,justifyContent:'flex-end',alignItems:'center', backgroundColor: '#F1F1F1' }}>
-        <Pressable onPress={()=> navigation.navigate('Login')} style={{alignItems:'center', justifyContent:'center' ,backgroundColor:'white', borderRadius:20, width:window.width*0.9, height:window.height*0.1}}>
-            <Text style={{fontSize:18, color:'#E12828'}}>Wyloguj</Text>
+        <Pressable onPress={logout} style={{alignItems:'center', justifyContent:'center' ,backgroundColor:'white', borderRadius:20, width:window.width*0.9, height:window.height*0.1}}>
+              <Text style={{fontSize:18, color:'#E12828'}}>Wyloguj</Text>
           </Pressable>
       </View>
       <View style={{flex: 0.1, backgroundColor:'#F1F1F1', justifyContent:'flex-end'}}>
         <View style={{alignItems:'center'}}>
-          <Text style={{color:'#838383', fontSize:14}}>Zalogowano jako email@wp.pl</Text>
+          <Text style={{color:'#838383', fontSize:14}}>Zalogowano jako {userInfo?.email}</Text>
         </View>
       </View>
     </View>

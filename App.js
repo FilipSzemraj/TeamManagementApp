@@ -9,6 +9,8 @@ import { UserProvider } from './components/UserContext';
 
 
 export default function App() {
+
+
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,

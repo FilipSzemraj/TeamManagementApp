@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {StyleSheet, View, Text, Image, Dimensions, Button, TouchableOpacity, TextInput} from 'react-native';
 import * as Location from 'expo-location';
 import colors from '../assets/colors/colors'
@@ -42,7 +42,7 @@ export default function Map({ navigation }) {
 
     const getData = async () => {
         try {
-            const response = await axios.get("http://192.168.0.21:3004/task");
+            const response = await axios.get("http://172.20.10.7:3004/task");
             setTasks(response.data);
         } catch (error) {
             console.error("Error while getting data", error);
@@ -82,23 +82,17 @@ export default function Map({ navigation }) {
             ));
     };
 
-    const userLocation = async() => {
-        let{status} = await Location.requestForegroundPermissionsAsync();
-        if(status != 'granted'){
-            console.error('Permission to access location was denied');
-        }
-        let location = await Location.getCurrentPositionAsync();
-        setMapRegion({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.0222,
-            longitudeDelta: 0.0121,
-        });
-        console.log(location.coords.latitude, location.coords.longitude);
-    }
+    const defaultRegion = {
+        latitude: 50.879212,
+        longitude: 20.639339,
+        latitudeDelta: 0.0222,
+        longitudeDelta: 0.0121,
+    };
 
     useEffect(() => {
-        userLocation();
+        if (!mapRegion) {
+            setMapRegion(defaultRegion);
+        }
     }, [])
 
     return (
@@ -108,7 +102,7 @@ export default function Map({ navigation }) {
             </View>
             <View style={styles.container}>
                 <SearchBar/>
-                <MapView style={styles.container}
+                <MapView provider={PROVIDER_GOOGLE} style={styles.container}
                          region={mapRegion}>
                     {renderMarkers()}
                 </MapView>

@@ -3,9 +3,11 @@ import { View, Text } from 'react-native';
 import { Dimensions } from 'react-native';
 import { styles } from './style';
 import { Pressable } from 'native-base';
+import { useUserContext } from './UserContext';
 const window = Dimensions.get('window');
 
 export default function Settings({navigation}) {
+  const { userInfo } = useUserContext();
 
   return (
     <View style={{ flex: 1 }}>
@@ -28,7 +30,7 @@ export default function Settings({navigation}) {
       </View>
       <View style={{flex: 0.7, backgroundColor:'#F1F1F1', justifyContent:'flex-end'}}>
         <View style={{alignItems:'center'}}>
-          <Text style={{color:'#838383', fontSize:14}}>Zalogowano jako email@wp.pl</Text>
+          <Text style={{color:'#838383', fontSize:14}}>Zalogowano jako {userInfo.user.email}</Text>
         </View>
       </View>
     </View>

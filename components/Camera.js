@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Button, Dimensions } from 'react-native';
 import { useState, useRef, useCallback } from 'react';
 import { Camera, CameraType } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+const window = Dimensions.get('window');
 
 export default function Cam({navigation}){
     const [type, setType] = useState(CameraType.back);
@@ -40,6 +41,7 @@ export default function Cam({navigation}){
 
     async function takePicture() {
         if (cameraRef.current && isCameraReady) {
+            console.log(AsyncStorage.getItem('lastPhoto'))
             try {
                 const photo = await cameraRef.current.takePictureAsync();
                 const fileName = photo.uri.split('/').pop();
@@ -47,16 +49,15 @@ export default function Cam({navigation}){
                 await FileSystem.moveAsync({
                     from: photo.uri,
                     to: newPath
-                })
-                const photoId = new Date().getTime().toString();
-                AsyncStorage.setItem(photoId, newPath);
+                });
+                await AsyncStorage.setItem('lastPhoto', newPath);
+                navigation.goBack(); // Wróć do poprzedniego ekranu
             } catch (e) {
                 console.error("Error taking picture:", e);
             }
-           
-            
         }
     }
+
 
     function toggleCameraType(){
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back))
@@ -64,11 +65,11 @@ export default function Cam({navigation}){
     return(
         <View style={styles.container}>
             <Camera key={cameraKey} style={styles.camera} type={type} ref={cameraRef} onCameraReady={onCameraReady}>
-                <TouchableOpacity onPress={()=> navigation.navigate('SpecIndividual')} style={styles.buttonContainer}>
-                    <Text style={styles.buttonText}>X</Text>
+                <TouchableOpacity onPress={()=> navigation.navigate('IndividualChats')} style={styles.buttonContainer}>
+                    <Text style={styles.buttonText}>x</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={takePicture} style={styles.buttonContainer2}>
-                    <Text style={styles.buttonText}>Take Picture</Text>
+                    <View style={styles.innerCircle} />
                 </TouchableOpacity>
             </Camera>
         </View>
@@ -86,17 +87,30 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     buttonContainer: {
-        flex: 1,
+        position: 'absolute',
+        top: 40,
+        left: 20,
         backgroundColor: 'transparent',
-        flexDirection: 'row',
-        margin: 20,
-    },buttonContainer2: {
-        flex: 1,
-        justifyContent:'flex-end',
+        zIndex: 10,
+    },
+    buttonContainer2: {
+        borderWidth: 2,
+        borderColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 70,
+        height: 70,
         backgroundColor: 'transparent',
-        flexDirection: 'column',
-        alignItems:'center',
-        margin: 20,
+        borderRadius: 35,
+        position: 'absolute',
+        bottom: 50,
+        left: window.width*0.42
+    },
+    innerCircle: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: 'white',
     },
     button: {
         flex: 0.1,
@@ -104,7 +118,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     buttonText: {
-        fontSize: 18,
+        fontSize: 25,  
+        fontWeight: 'bold',
         color: 'white',
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 1,
     },
   });

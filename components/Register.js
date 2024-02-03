@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, Image} from 'react-native';
 import {styles} from './style.js'
 import { Button, Pressable } from "native-base";
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default function Register({ navigation }) {
 return (

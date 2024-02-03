@@ -5,11 +5,14 @@ import { Dimensions } from 'react-native';
 import {styles} from './style';
 import { useNavigation } from '@react-navigation/native';
 import { Pressable, Image } from 'native-base';
+import { useUserContext } from './UserContext';
 const window = Dimensions.get('window');
 
 
 export default function Profile() {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
+  const { userInfo } = useUserContext();
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -17,9 +20,7 @@ export default function Profile() {
       <View style={{flex:1}}>
         <View style={{margin:window.height*0.03}}>
             <Text style={styles.infoTextProfile}>Name</Text>
-            <Text style={styles.infoTextProfileSpecified}>Karol</Text>
-            <Text style={styles.infoTextProfile}>Surname</Text>
-            <Text style={styles.infoTextProfileSpecified}>Cioć</Text>
+            <Text style={styles.infoTextProfileSpecified}>{userInfo?.displayName}</Text>
             <Text style={styles.infoTextProfile}>Specialization</Text>
             <Text style={styles.infoTextProfileSpecified}>IT student</Text>
             <Text style={styles.infoTextProfile}>Country</Text>
