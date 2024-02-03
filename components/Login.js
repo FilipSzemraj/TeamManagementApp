@@ -41,6 +41,7 @@ export default function FormLogin({ navigation }) {
                 await saveUserToFirestore(authResult.user);
             } else {
                 console.log("Użytkownik zalogował się ponownie");
+
             }
 
             setUserInfo(authResult.user);

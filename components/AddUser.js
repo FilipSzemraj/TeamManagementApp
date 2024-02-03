@@ -4,7 +4,7 @@ import HeaderForDrawer from './headerForDrawer';
 import { Dimensions } from 'react-native';
 import { styles } from './style';
 import { Pressable } from 'native-base';
-import { doc, updateDoc, arrayUnion, getDocs, collection, query, where } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, getDocs, collection, query, where, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { getAuth } from 'firebase/auth';
 
@@ -48,6 +48,34 @@ export default function AddUser({ navigation }) {
             await updateDoc(userDocRef, {
                 friendList: arrayUnion(friendId)
             });
+
+            const friendDocRef = doc(db, 'users', friendId);
+
+            await updateDoc(friendDocRef, {
+                friendList: arrayUnion(userId)
+            });
+
+            const chatName = `Czat pomiędzy ${[userAuth.currentUser.displayName, friendName].sort().join(', a ')}`;
+
+            const chatData = {
+                participants: [userId, friendId], // Ustaw uczestników czatu
+                createdAt: serverTimestamp(), // Ustaw timestamp utworzenia czatu
+                lastMessage: "", // Możesz zainicjalizować ostatnią wiadomość jako pustą lub z domyślną wartością
+                name: chatName,
+            };
+
+            const chatDocRef = await addDoc(collection(db, 'chats'), chatData);
+
+
+            const updateUserChatList = async (userId, chatId) => {
+                const userChatRef = doc(db, 'users', userId);
+                await updateDoc(userChatRef, {
+                    chatList: arrayUnion(chatId)
+                });
+            };
+
+            await updateUserChatList(userId, chatDocRef.id);
+            await updateUserChatList(friendId, chatDocRef.id);
 
             console.log('Friend added successfully');
         } catch (error) {

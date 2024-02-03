@@ -1,113 +1,80 @@
-import React, {useState, useEffect} from 'react';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import {StyleSheet, View, Text, Image, Dimensions, Button, TouchableOpacity, TextInput} from 'react-native';
-import * as Location from 'expo-location';
-import colors from '../assets/colors/colors'
+import React, { useState, useEffect } from 'react';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Dimensions, Image } from 'react-native';
 import axios from "axios";
-import {useFocusEffect} from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
+import colors from '../assets/colors/colors';
 
 const window = Dimensions.get('window');
 
-const SearchBar = ({ onSearchPress }) => {
-    return (
-        <View style={styles.containerSearch}>
-            <TextInput
-                style={styles.input}
-                placeholder="Search"
-            />
-            <TouchableOpacity onPress={onSearchPress}>
-                <Image
-                    style={styles.searchIcon}
-                    source={require('../assets/images/searchLoop.png')} 
-                />
-            </TouchableOpacity>
-        </View>
-    );
-};
-
-const AddButton = ({ onPress }) => {
-    return (
-        <TouchableOpacity style={styles.addButton} onPress={onPress}>
-            <Text style={styles.addText}>Continue</Text>
-        </TouchableOpacity>
-
-
-    );
-};
-
-export default function Map({ navigation }) {
-
+export default function Map({ navigation, route }) {
+    const [selectedLocation, setSelectedLocation] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [mapRegion, setMapRegion] = useState(null);
+    const handleLocationSelect = route.params?.handleLocationSelect;
 
-    const getData = async () => {
-        try {
-            const response = await axios.get("http://172.20.10.7:3004/task");
-            setTasks(response.data);
-        } catch (error) {
-            console.error("Error while getting data", error);
-        }
-    };
-
-
+    useEffect(() => {
+        const defaultRegion = {
+            latitude: 50.879212,
+            longitude: 20.639339,
+            latitudeDelta: 0.0222,
+            longitudeDelta: 0.0121,
+        };
+        setMapRegion(defaultRegion);
+    }, []);
 
     useFocusEffect(
         React.useCallback(() => {
-            getData();
+            const fetchData = async () => {
+                try {
+                    const response = await axios.get("http://172.20.10.7:3004/task");
+                    setTasks(response.data);
+                } catch (error) {
+                    console.error("Error while getting data", error);
+                }
+            };
+            fetchData();
         }, [])
     );
 
-
-    const addLocationToTask = (taskId, location) => {
-        setTasks(currentTasks => currentTasks.map(task => {
-            if (task.id === taskId) {
-                return { ...task, location };
-            }
-            return task;
-        }));
-    };
-
-    const renderMarkers = () => {
-        return tasks
-            .filter(task => task.location)
-            .map(task => (
-                <Marker
-                    key={task.id}
-                    coordinate={{
-                        latitude: task.location.latitude,
-                        longitude: task.location.longitude
-                    }}
-                    title={task.name}
-                />
-            ));
-    };
-
-    const defaultRegion = {
-        latitude: 50.879212,
-        longitude: 20.639339,
-        latitudeDelta: 0.0222,
-        longitudeDelta: 0.0121,
-    };
-
-    useEffect(() => {
-        if (!mapRegion) {
-            setMapRegion(defaultRegion);
-        }
-    }, [])
+    const renderMarkers = () => tasks.filter(task => task.location).map(task => (
+        <Marker
+            key={task.id}
+            coordinate={task.location}
+            title={task.name}
+        />
+    ));
 
     return (
         <View style={styles.window}>
-            <View style={styles.header}>
-
-            </View>
-            <View style={styles.container}>
-                <SearchBar/>
-                <MapView provider={PROVIDER_GOOGLE} style={styles.container}
-                         region={mapRegion}>
-                    {renderMarkers()}
-                </MapView>
-                <AddButton/>
-            </View>
+            <MapView
+                provider={PROVIDER_GOOGLE}
+                style={styles.map}
+                region={mapRegion}
+                onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}
+            >
+                {renderMarkers()}
+                {selectedLocation && (
+                    <Marker
+                        coordinate={selectedLocation}
+                        title={"Wybrana lokalizacja"}
+                    />
+                )}
+            </MapView>
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => {
+                    console.log(selectedLocation);
+                    console.log(handleLocationSelect);
+                    if (selectedLocation && handleLocationSelect) {
+                        console.log("wyslano lokalizacje");
+                        handleLocationSelect(selectedLocation.latitude, selectedLocation.longitude, "Wybrana lokalizacja");
+                        navigation.goBack();
+                    }
+                }}
+            >
+                <Text style={styles.addText}>Continue</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -124,7 +91,7 @@ const styles = StyleSheet.create({
         flex: 975,
     },
     map: {
-
+        flex: 1,
     },
     containerSearch: {
         zIndex:2,

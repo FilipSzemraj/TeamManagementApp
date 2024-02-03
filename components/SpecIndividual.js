@@ -1,91 +1,130 @@
-import React, { useState } from 'react';
-import { View, Text, Dimensions, KeyboardAvoidingView, ScrollView} from 'react-native';
-import HeaderForDrawer from './headerForDrawer';
-import {styles} from './style';
-import { Pressable, Image, TextArea} from 'native-base';
+import React, { useEffect, useCallback, useState, useLayoutEffect } from 'react';
+import { View, Text, Dimensions, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Avatar } from 'react-native-elements';
+import { GiftedChat } from 'react-native-gifted-chat';
+import { collection, addDoc, query, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth, db } from '../firebase';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Keyboard } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import HeaderForDrawer from './headerForDrawer';
 const window = Dimensions.get('window');
 
-export default function SpecIndividual({navigation}) {
-  const [showMenu, setShowMenu] = useState(false);
 
-  const toggleMenu = () => {
-    Keyboard.dismiss();
-    setShowMenu(!showMenu); 
-    console.log(showMenu);
-  };
 
-  return (
-    <GestureHandlerRootView style={{ flex: 1 ,backgroundColor:'#F1F1F1'}}>
-      <HeaderForDrawer navigation={navigation}/>
-        <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={{ flex: 1, justifyContent: 'flex-start', backgroundColor: '#F1F1F1' }}
+const SpecIndividual = ({ navigation, route }) => {
+    const { chatId } = route.params;
+    const [messages, setMessages] = useState([]);
+    const [chatTitle, setChatTitle] = useState(''); // Stan na tytuł czatu
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerLeft: () => (
+                <View style={{ marginLeft: 20 }}>
+                    <Avatar rounded source={{ uri: auth?.currentUser?.photoURL }} />
+                </View>
+            ),
+        });
+    }, [navigation]);
+
+    useEffect(() => {
+        const q = query(collection(db, `chats/${chatId}/messages`), orderBy('createdAt', 'desc'));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const firebaseMessages = snapshot.docs.map(doc => ({
+                _id: doc.id,
+                text: doc.data().text,
+                createdAt: doc.data().createdAt.toDate(),
+                user: doc.data().user,
+                image: doc.data().image,
+                location: doc.data().location,
+            }));
+            setMessages(firebaseMessages);
+        });
+        return () => unsubscribe();
+
+    }, [chatId]);
+
+    useEffect(()=>{
+        const fetchChatDetails = async () => {
+            const chatRef = doc(db, 'chats', chatId);
+            const chatSnap = await getDoc(chatRef);
+
+            if (chatSnap.exists()) {
+                const chatData = chatSnap.data();
+                // Aktualizacja tytułu czatu na pasku nawigacyjnym
+                //console.log(chatData.name);
+                setChatTitle(chatData.name); // Ustawianie tytułu czatu pobranego z Firestore
+
+            }else {
+                console.log("No such document!");
+                setChatTitle("Nieznany Czat"); // Ustawienie domyślnego tytułu, gdy nie znaleziono dokumentu
+            }
+        };
+
+        fetchChatDetails().then(() => {
+            console.log('Chat details fetched successfully');
+        }).catch(error => {
+            console.error('Error fetching chat details:', error);
+        });
+    }, [chatId, navigation]);
+
+    const onSend = useCallback(async (messages = []) => {
+        const { _id, createdAt, text, user, location } = messages[0];
+        let messageData = { _id, createdAt, text, user };
+
+        const photoUri = await AsyncStorage.getItem('lastPhoto');
+        if (photoUri) {
+            messageData.image = photoUri;
+            await AsyncStorage.removeItem('lastPhoto');
+        }
+        if (location) {
+            messageData.location = location;
+        }
+
+        await addDoc(collection(db, `chats/${chatId}/messages`), messageData);
+    }, [chatId]);
+
+    const renderActions = () => (
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 5 }}>
+            <TouchableOpacity
+                style={{ marginRight: 5, padding: 2.5 }}
+                onPress={() => navigation.navigate('Camera', {
+                    onPictureTaken: async (photoUrl) => {
+                        await AsyncStorage.setItem('lastPhoto', photoUrl);
+                        // Można tutaj dodać logikę, jeśli potrzebujesz bezpośrednio wysyłać zdjęcie
+                    },
+                })}
             >
-            <View style={styles.wrapperChatPress}>
-                <Pressable style={styles.containerXChat} onPress={()=> navigation.navigate('MainList')}><Image alt="exit_img"source={require('../assets/images/exitButton.png')}/></Pressable>
-                <Pressable style={styles.containerPressChat} onPress={()=> navigation.navigate('IndividualChats')}><Text style={styles.textChatsLine}>Individual chats</Text></Pressable>
-                <Pressable style={styles.containerPressChat} onPress={()=> navigation.navigate('GroupChats')}><Text style={styles.textChatsNoLine}>Group chats</Text></Pressable>
-            </View>
-            <View style={{backgroundColor:'white',height:window.height*0.06,flexDirection:'row', justifyContent:'center',alignItems:'center', marginBottom:5}}>
-                <Text style={styles.textChats2}>Tupac Shakur</Text>
-                <Pressable onPress={()=>navigation.goBack()}>
-                    <Image alt="arror_left_img" source={require('../assets/images/arrow_left.png')}/>
-                </Pressable>           
-            </View>
-            <ScrollView style={{flexGrow:1}}>
-              <View style={{flexDirection:'row',alignItems:'center',marginBottom:window.height*0.02,borderRadius:15,height:window.height*0.09}}>
-                <Image alt="mess_img" style={styles.messImgSmall} source={require('../assets/images/profile.png')}/>
-                  <View style={{backgroundColor:'white', borderRadius:10}}>
-                  <Text style={{padding:5,width:window.width*0.67}}>Hola, como estas. Estamos terminando este proyecto. Y nos vamos al concierto</Text>
-                  </View>
-              </View>
-              <View style={{flexDirection:'row-reverse',alignItems:'center',margin:1,borderRadius:15,height:window.height*0.09}}>
-              <View style={{backgroundColor:'white', borderRadius:10}}>
-                  <Text style={{padding:5,width:window.width*0.67}}>Hola. Por supuesto. Este será un trabajo fácil.</Text>
-                  </View>
-              </View>
-              <View style={{flexDirection:'row',alignItems:'center',margin:1,borderRadius:15,height:window.height*0.09}}>
-                <Image alt="mess_img" style={styles.messImgSmall} source={require('../assets/images/profile.png')}/>
-                  <View style={{backgroundColor:'white', borderRadius:10}}>
-                  <Text style={{padding:5,width:window.width*0.67}}>haha, entonces nos vemos en la fiesta posterior</Text>
-               </View>
-              </View>
-              <View style={{flexDirection:'row-reverse',alignItems:'center',margin:1,borderRadius:15,height:window.height*0.09}}>
-              <View style={{backgroundColor:'white', borderRadius:10}}>
-                  <Text style={{padding:5,width:window.width*0.67}}>Hola. Por supuesto. Este será un trabajo fácil.</Text>
-              </View>
-              </View>
-        </ScrollView>
-        <View style={{flexDirection:'row', alignItems:'center'}}>
-            <TextArea
-            h={window.height * 0.05}
-            style={styles.textAreaTask}
-            mx="auto"
-            w="90%"
-            />
-            <TouchableOpacity onPress={toggleMenu}>
-              <Image alt="square_icon_chat" source={require('../assets/images/darhboard.png')}/>
+                <Icon name="camera" size={36} color="#000" />
             </TouchableOpacity>
-            {showMenu ? 
-            <View style={styles.iconsContainer}>
-              <Pressable onPress={() => navigation.navigate('Camera')}>
-                <Image style={styles.icon} alt="camera_icon" source={require('../assets/images/camera.png')}/>
-              </Pressable>
-              <Pressable>
-                <Image style={styles.icon} alt="upload_icon" source={require('../assets/images/load_file.png')}/> 
-              </Pressable>
-              <Pressable onPress={()=> navigation.navigate('Map')}>
-                <Image style={styles.icon} alt="localization_icon" source={require('../assets/images/localization.png')}/> 
-              </Pressable>
-            </View>
-            : null}
-            <Icon name="paper-plane" size={20} color="black" />
+            <TouchableOpacity
+                style={{ marginRight: 5, padding: 2.5 }}
+                onPress={() => navigation.navigate('Map', { /* Logika wyboru lokalizacji */ })}>
+                <Icon name="map-marker-alt" size={36} color="#000" />
+            </TouchableOpacity>
         </View>
-    </KeyboardAvoidingView>
-    </GestureHandlerRootView>
-  );
-}
+    );
+
+    return (
+        <View style={{ flex: 1, backgroundColor: '#F1F1F1' }}>
+            <HeaderForDrawer navigation={navigation} />
+            <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+                <View style={{ paddingTop: 5, paddingBottom: 5, backgroundColor: 'gray', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{chatTitle}</Text>
+                </View>
+
+                <GiftedChat
+                    messages={messages}
+                    onSend={messages => onSend(messages)}
+                    user={{
+                        _id: auth?.currentUser?.email,
+                        name: auth?.currentUser?.displayName,
+                        avatar: auth?.currentUser?.photoURL,
+                    }}
+                    renderActions={renderActions}
+                />
+            </View>
+        </View>
+    );
+};
+
+export default SpecIndividual;
