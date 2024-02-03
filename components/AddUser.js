@@ -5,7 +5,7 @@ import { Dimensions } from 'react-native';
 import { styles } from './style';
 import { Pressable } from 'native-base';
 import { doc, updateDoc, arrayUnion, getDocs, collection, query, where } from 'firebase/firestore';
-import { db, auth } from '../firebase';
+import { db } from '../firebase';
 import { getAuth } from 'firebase/auth';
 
 const window = Dimensions.get('window');
@@ -20,7 +20,6 @@ export default function AddUser({ navigation }) {
         }
 
         try {
-            // Pobierz ID zalogowanego użytkownika z Firebase Auth
             const userAuth = getAuth();
             const userId = userAuth.currentUser ? userAuth.currentUser.uid : null;
 
@@ -29,7 +28,6 @@ export default function AddUser({ navigation }) {
                 return;
             }
 
-            // Wyszukaj użytkownika (znajomego) po nazwie
             const usersRef = collection(db, 'users');
             const q = query(usersRef, where('displayName', '==', friendName));
             const querySnapshot = await getDocs(q);
@@ -39,11 +37,9 @@ export default function AddUser({ navigation }) {
                 return;
             }
 
-            // Załóżmy, że nazwy użytkowników są unikalne
             const friendDoc = querySnapshot.docs[0];
             const friendId = friendDoc.id;
 
-            // Dodaj znajomego do listy znajomych zalogowanego użytkownika
             const userDocRef = doc(db, 'users', userId);
             await updateDoc(userDocRef, {
                 friendList: arrayUnion(friendId)

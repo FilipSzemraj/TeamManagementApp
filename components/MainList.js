@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View, Image, Pressable, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable,TextInput } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Dimensions } from "react-native";
 import { RadioButton } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { Calendar } from 'react-native-calendars';
-import { useUserContext } from './UserContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAuth } from 'firebase/auth';
+import { db } from '../firebase';
+import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 const window = Dimensions.get("window");
 
 export default function MainList({ navigation }) {
@@ -15,20 +15,11 @@ export default function MainList({ navigation }) {
   const [taskDate, setTaskDate] = React.useState(new Date().toISOString().split('T')[0]);
   const [editableTask, setEditableTask] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const userAuth = getAuth();
+  const loggedInUserId = userAuth.currentUser ? userAuth.currentUser.uid : null;
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get(`http://172.20.10.7:3004/task`);
-        const filteredTasks = response.data
-          .filter(task => task.date === taskDate)
-          .sort((a, b) => a.priority - b.priority);
-        setTasks(filteredTasks);
-      } catch (error) {
-        console.error("Error while getting tasks", error);
-      }
-    };
-    fetchTasks();
+    getData()
   }, [taskDate]);
 
   const handleEdit = (task) => {
@@ -38,34 +29,46 @@ export default function MainList({ navigation }) {
 
   const handleSave = async () => {
     if (editableTask) {
-        try {
-            await axios.put(`http://172.20.10.7:3004/task/${editableTask.id}`, editableTask);
-            const updatedTasks = tasks
-                .map(task => task.id === editableTask.id ? { ...task, ...editableTask } : task)
-                .sort((a, b) => a.priority - b.priority); 
-            setTasks(updatedTasks);
-            setIsEditing(false);
-            setEditableTask(null);
-        } catch (error) {
-            console.error('Error while saving task', error);
-        }
-    } else {
-        console.error('Editable task is null.');
+      try {
+        const taskRef = doc(db, 'users', loggedInUserId, 'tasks', editableTask.id);
+        await updateDoc(taskRef, {
+          name: editableTask.name,
+          priority: editableTask.priority,
+        });
+
+        setTasks(prevTasks => {
+          return prevTasks.map(task => {
+            if (task.id === editableTask.id) {
+              return { ...task, ...editableTask };
+            } else {
+              return task;
+            }
+          });
+        });
+      setIsEditing(false);
+      setEditableTask(null);
+      } catch (error) {
+        console.error('Error while saving task', error);
+      }
     }
 };
-
-
   
   const getData = async () => {
-    const loggedInUserId = await AsyncStorage.getItem('loggedInUserId'); 
+    if (!loggedInUserId) {
+      console.error("No logged in user id found");
+      return;
+    }
+    const q = query(collection(db, 'users', loggedInUserId, 'tasks'), where('date', '==', taskDate));
     try {
-      const response = await axios.get(`http://172.20.10.7:3004/task?userId=${loggedInUserId}`);
-      const filteredTasks = response.data
-        .filter(task => task.date === taskDate)
-        .sort((a, b) => a.priority - b.priority);
+      const querySnapshot = await getDocs(q);
+      const filteredTasks = [];
+      querySnapshot.forEach((doc) => {
+        filteredTasks.push({ id: doc.id, ...doc.data() });
+      });
+      filteredTasks.sort((a, b) => a.priority - b.priority);
       setTasks(filteredTasks);
     } catch (error) {
-      console.error("Error while getting data", error);
+      console.error("Error while getting tasks", error);
     }
   };
   
@@ -73,14 +76,14 @@ export default function MainList({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       getData();
-    }, [taskDate])
+    }, [taskDate,editableTask])
   );
 
   const handleRadio = async (taskId) => {
     try {
-      await axios.delete(`http://172.20.10.7:3004/task/${taskId}`);
-      const updatedTasks = tasks.filter(task => task.id !== taskId);
-      setTasks(updatedTasks);
+      const taskRef = doc(db, 'users', loggedInUserId, 'tasks', taskId);
+      await deleteDoc(taskRef);
+      setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
     } catch (error) {
       console.error('Error while deleting task', error);
     }

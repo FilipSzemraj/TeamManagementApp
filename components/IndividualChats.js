@@ -5,14 +5,12 @@ import { Avatar } from 'react-native-elements';
 import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth, db } from '../firebase'; 
-import { serverTimestamp } from "firebase/firestore";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import HeaderForDrawer from './headerForDrawer'; 
 const window = Dimensions.get('window');
 
 export default function IndividualChats({ navigation }) {
     const [messages, setMessages] = useState([]);
-    const [photoUri, setPhotoUri] = useState('');
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -25,22 +23,22 @@ export default function IndividualChats({ navigation }) {
     }, [navigation]);
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(query(collection(db, 'chats'), orderBy('createdAt', 'desc')), (snapshot) => {
-            const firebaseMessages = snapshot.docs.map(doc => ({
-                _id: doc.id,
-                text: doc.data().text,
-                createdAt: doc.data().createdAt.toDate(),
-                user: doc.data().user,
-                image: doc.data().image,
-            }));
-            setMessages(previousMessages => GiftedChat.append(previousMessages, firebaseMessages));
-        });
+        const unsubscribe = onSnapshot(
+            query(collection(db, 'chats'), orderBy('createdAt', 'desc')),
+            (snapshot) => {
+                const firebaseMessages = snapshot.docs.map(doc => ({
+                    _id: doc.id,
+                    text: doc.data().text,
+                    createdAt: doc.data().createdAt.toDate(),
+                    user: doc.data().user,
+                    image: doc.data().image,
+                }));
+                setMessages(firebaseMessages);
+            });
     
         return () => unsubscribe();
     }, []);
     
-    
-
     const onSend = useCallback(async (messages = []) => {
         try {
             const { _id, createdAt, text, user } = messages[0];
@@ -61,11 +59,6 @@ export default function IndividualChats({ navigation }) {
             console.error("Błąd dodawania wiadomości do Firebase:", error);
         }
     }, []);
-    
-
-    
-    
-    
 
     const renderActions = () => {
         return (
@@ -79,12 +72,6 @@ export default function IndividualChats({ navigation }) {
         <View style={{ flex: 1, backgroundColor: '#F1F1F1' }}>
             <HeaderForDrawer navigation={navigation} />
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-                {/* Tutaj dodajemy Image do wyświetlenia zdjęcia */}
-                {photoUri ? (
-                    <Image source={{ uri: photoUri }} style={{ width: 300, height: 300, alignSelf: 'center' }} />
-                ) : (
-                    <Text style={{ alignSelf: 'center' }}>Brak zdjęcia</Text>
-                )}
                <GiftedChat
                 messages={messages}
                 onSend={messages => onSend(messages)}

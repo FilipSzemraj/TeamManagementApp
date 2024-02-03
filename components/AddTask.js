@@ -5,11 +5,13 @@ import { TextArea } from 'native-base';
 import { Dimensions } from 'react-native';
 import { Select, CheckIcon, Image } from "native-base";
 import {styles} from './style';
-import axios from 'axios';
+import { db } from '../firebase';
+import { getAuth } from 'firebase/auth';
 import { Calendar } from 'react-native-calendars';
 import { Keyboard } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { collection, addDoc } from 'firebase/firestore'; 
 const window = Dimensions.get('window');
 
 export default function AddTask({ navigation }) {
@@ -64,15 +66,21 @@ const onChange = (event, selectedDate) => {
 
 const addTask = async ()=>{
     try{
-    const response = await axios('http://172.20.10.7:3004/task');
-    const existingTasks = response.data;
+    const userAuth = getAuth();
+    const userId = userAuth.currentUser ? userAuth.currentUser.uid : null;
+    
     const newTask = {
-        id: existingTasks.length === 0 ? 1 : existingTasks[existingTasks.length-1].id+1,
         name:newTaskName,
         completed:false,
         date:taskDate,
         priority: priority,
     }
+    
+    if (!userId) {
+      console.error('No authenticated user found');
+        return;
+    }
+
     if (newTaskName.length < 5) {
       Alert.alert("Task name is too short");
       return;
@@ -82,7 +90,9 @@ const addTask = async ()=>{
       Alert.alert("Please select a date for the task");
       return;
     }
-    await axios.post('http://172.20.10.7:3004/task', newTask)
+
+    await addDoc(collection(db, 'users', userId, 'tasks'), newTask);
+
     await scheduleNotification(newTaskName, taskDate);
     Alert.alert("Task added and reminder set!");
     navigation.navigate('MainList');
