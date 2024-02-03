@@ -4,8 +4,8 @@ import HeaderForDrawer from './headerForDrawer';
 import { Dimensions } from 'react-native';
 import { styles } from './style';
 import { Pressable } from 'native-base';
-import { doc, updateDoc, arrayUnion, getDocs, collection, query, where } from 'firebase/firestore';
-import { db } from '../firebase';
+import { doc, updateDoc, arrayUnion, getDocs, collection, query, where, serverTimestamp, addDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase';
 import { getAuth } from 'firebase/auth';
 
 const window = Dimensions.get('window');
@@ -20,6 +20,7 @@ export default function AddUser({ navigation }) {
         }
 
         try {
+            // Pobierz ID zalogowanego użytkownika z Firebase Auth
             const userAuth = getAuth();
             const userId = userAuth.currentUser ? userAuth.currentUser.uid : null;
 
@@ -28,6 +29,7 @@ export default function AddUser({ navigation }) {
                 return;
             }
 
+            // Wyszukaj użytkownika (znajomego) po nazwie
             const usersRef = collection(db, 'users');
             const q = query(usersRef, where('displayName', '==', friendName));
             const querySnapshot = await getDocs(q);
@@ -37,13 +39,43 @@ export default function AddUser({ navigation }) {
                 return;
             }
 
+            // Załóżmy, że nazwy użytkowników są unikalne
             const friendDoc = querySnapshot.docs[0];
             const friendId = friendDoc.id;
 
+            // Dodaj znajomego do listy znajomych zalogowanego użytkownika
             const userDocRef = doc(db, 'users', userId);
             await updateDoc(userDocRef, {
                 friendList: arrayUnion(friendId)
             });
+
+            const friendDocRef = doc(db, 'users', friendId);
+
+            await updateDoc(friendDocRef, {
+                friendList: arrayUnion(userId)
+            });
+
+            const chatName = `Czat pomiędzy ${[userAuth.currentUser.displayName, friendName].sort().join(', a ')}`;
+
+            const chatData = {
+                participants: [userId, friendId], // Ustaw uczestników czatu
+                createdAt: serverTimestamp(), // Ustaw timestamp utworzenia czatu
+                lastMessage: "", // Możesz zainicjalizować ostatnią wiadomość jako pustą lub z domyślną wartością
+                name: chatName,
+            };
+
+            const chatDocRef = await addDoc(collection(db, 'chats'), chatData);
+
+
+            const updateUserChatList = async (userId, chatId) => {
+                const userChatRef = doc(db, 'users', userId);
+                await updateDoc(userChatRef, {
+                    chatList: arrayUnion(chatId)
+                });
+            };
+
+            await updateUserChatList(userId, chatDocRef.id);
+            await updateUserChatList(friendId, chatDocRef.id);
 
             console.log('Friend added successfully');
         } catch (error) {

@@ -21,7 +21,7 @@ export default function FormLogin({ navigation }) {
 
     const saveUserToFirestore = async (user) => {
         const userRef = doc(db, 'users', user.uid);
-        await setDoc(userRef, { 
+        await setDoc(userRef, {
             uid: user.uid,
             displayName: user.displayName,
             photoURL: user.photoURL,

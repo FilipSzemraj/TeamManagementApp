@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="381ad747-41a5-41b0-86af-f567f79d46c2" name="Changes" comment="">
+    <list default="true" id="381ad747-41a5-41b0-86af-f567f79d46c2" name="Changes" comment="image name change">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/AddTask.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/AddTask.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/AddUser.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/AddUser.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/IndividualChats.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/IndividualChats.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Map.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Map.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/SpecIndividual.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/SpecIndividual.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,8 +62,30 @@
       <workItem from="1706970646628" duration="583000" />
       <workItem from="1706971256272" duration="192000" />
       <workItem from="1706975882542" duration="599000" />
-      <workItem from="1706985439690" duration="16978000" />
+      <workItem from="1706985439690" duration="17860000" />
     </task>
+    <task id="LOCAL-00001" summary="pogrupowane czaty">
+      <created>1707002887600</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1707002887600</updated>
+    </task>
+    <task id="LOCAL-00002" summary="pogrupowane czaty">
+      <created>1707003106263</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1707003106263</updated>
+    </task>
+    <task id="LOCAL-00003" summary="image name change">
+      <created>1707003134137</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1707003134137</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -81,5 +101,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="grouped chats" />
+    <MESSAGE value="pogrupowane czaty" />
+    <MESSAGE value="image name change" />
+    <option name="LAST_COMMIT_MESSAGE" value="image name change" />
   </component>
 </project>

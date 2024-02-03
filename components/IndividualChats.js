@@ -1,86 +1,58 @@
-import React, { useEffect, useCallback, useState, useLayoutEffect } from 'react';
-import { View, Text, Dimensions, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { GiftedChat } from 'react-native-gifted-chat';
-import { Avatar } from 'react-native-elements';
-import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { auth, db } from '../firebase'; 
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import HeaderForDrawer from './headerForDrawer'; 
-const window = Dimensions.get('window');
+import React, { useEffect, useState } from 'react';
+import { View, FlatList, Text, TouchableOpacity } from 'react-native';
+import { auth, db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import HeaderForDrawer from './headerForDrawer'; // Załóżmy, że masz taki komponent
 
 export default function IndividualChats({ navigation }) {
-    const [messages, setMessages] = useState([]);
-
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerLeft: () => (
-                <View style={{ marginLeft: 20 }}>
-                    <Avatar rounded source={{ uri: auth?.currentUser?.photoURL }} />
-                </View>
-            ),
-        });
-    }, [navigation]);
+    const [chats, setChats] = useState([]); // Stan na listę czatów
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(
-            query(collection(db, 'chats'), orderBy('createdAt', 'desc')),
-            (snapshot) => {
-                const firebaseMessages = snapshot.docs.map(doc => ({
-                    _id: doc.id,
-                    text: doc.data().text,
-                    createdAt: doc.data().createdAt.toDate(),
-                    user: doc.data().user,
-                    image: doc.data().image,
-                }));
-                setMessages(firebaseMessages);
-            });
-    
-        return () => unsubscribe();
-    }, []);
-    
-    const onSend = useCallback(async (messages = []) => {
-        try {
-            const { _id, createdAt, text, user } = messages[0];
-    
-            const photoUri = await AsyncStorage.getItem('lastPhoto');
-            let messagePayload = {
-                _id, createdAt, text, user,
-            };
-    
-            if (photoUri) {
-                messagePayload.image = photoUri;
-                await AsyncStorage.removeItem('lastPhoto');
-            }
-    
-            await addDoc(collection(db, 'chats'), messagePayload);
-            console.log("Wiadomość została dodana do Firebase");
-        } catch (error) {
-            console.error("Błąd dodawania wiadomości do Firebase:", error);
-        }
-    }, []);
+        const loadUserChats = async () => {
+            const userRef = doc(db, 'users', auth.currentUser.uid); // Referencja do dokumentu użytkownika
+            const docSnap = await getDoc(userRef);
 
-    const renderActions = () => {
-        return (
-            <TouchableOpacity style={{ padding: 5, marginBottom: 10 }} onPress={() => navigation.navigate('Camera')}>
-                <Icon name="camera" size={36} color="#000" />
-            </TouchableOpacity>
-        );
-    };
+            if (docSnap.exists()) {
+                const userData = docSnap.data();
+                const chatIds = userData.chatList || []; // Pobieramy listę ID czatów z dokumentu użytkownika
+
+                // Pobieranie szczegółów dla każdego czatu
+                const chatDetailsPromises = chatIds.map(async (chatId) => {
+                    const chatRef = doc(db, 'chats', chatId);
+                    const chatSnap = await getDoc(chatRef);
+                    if (chatSnap.exists()) {
+                        return { id: chatSnap.id, ...chatSnap.data() };
+                    } else {
+                        return null; // W przypadku braku czatu, zwracamy null
+                    }
+                });
+
+                const chatDetails = await Promise.all(chatDetailsPromises);
+                setChats(chatDetails.filter(chat => chat !== null)); // Aktualizacja stanu, filtrowanie null
+            } else {
+                console.log("No such document!");
+            }
+        };
+
+        loadUserChats();
+    }, []);
 
     return (
         <View style={{ flex: 1, backgroundColor: '#F1F1F1' }}>
             <HeaderForDrawer navigation={navigation} />
-            <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-               <GiftedChat
-                messages={messages}
-                onSend={messages => onSend(messages)}
-                user={{
-                    _id: auth?.currentUser?.email,
-                    name: auth?.currentUser?.displayName,
-                    avatar: auth?.currentUser?.photoURL,
-                }}
-                renderActions={renderActions}
+            <View style={{ flex: 1 }}>
+                <FlatList
+                    data={chats}
+                    keyExtractor={item => item.id}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={{ padding: 20, borderBottomWidth: 1, borderBottomColor: '#ccc' }}
+                            onPress={() => navigation.navigate('SpecIndividual', { chatId: item.id, chatName: item.name })}
+                        >
+                            <Text style={{ fontWeight: 'bold' }}>{item.name || "Unnamed Chat"}</Text>
+                            <Text style={{ marginLeft: 20 }}>{item.lastMessage || ""}</Text>
+                        </TouchableOpacity>
+                    )}
                 />
             </View>
         </View>
