@@ -6,8 +6,8 @@ import { Pressable } from "native-base";
 import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import { useUserContext } from './UserContext';
 import { GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore'; // Import odpowiednich metod Firestore
-import { auth, db } from "../firebase"; // Upewnij się, że importujesz instancję Firestore
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from "../firebase";
 
 export default function FormLogin({ navigation }) {
     const [error, setError] = useState();
@@ -20,8 +20,8 @@ export default function FormLogin({ navigation }) {
     }, []);
 
     const saveUserToFirestore = async (user) => {
-        const userRef = doc(db, 'users', user.uid); // Użyj 'users' zamiast 'user' i `doc` do odwołania się do dokumentu
-        await setDoc(userRef, { // Użyj `setDoc` do zapisu
+        const userRef = doc(db, 'users', user.uid);
+        await setDoc(userRef, { 
             uid: user.uid,
             displayName: user.displayName,
             photoURL: user.photoURL,

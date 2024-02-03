@@ -10,12 +10,7 @@ export default function Cam({navigation}){
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const cameraRef = useRef(null);
-    const [isCameraReady, setIsCameraReady] = useState(false);
     const [cameraKey, setCameraKey] = useState(0);
-
-    const onCameraReady = () => {
-        setIsCameraReady(true);
-    };
    
     useFocusEffect(
         useCallback(() => {
@@ -40,8 +35,8 @@ export default function Cam({navigation}){
     }
 
     async function takePicture() {
-        if (cameraRef.current && isCameraReady) {
-            console.log(AsyncStorage.getItem('lastPhoto'))
+        console.log(cameraRef.current);
+        if (cameraRef.current) {
             try {
                 const photo = await cameraRef.current.takePictureAsync();
                 const fileName = photo.uri.split('/').pop();
@@ -51,7 +46,9 @@ export default function Cam({navigation}){
                     to: newPath
                 });
                 await AsyncStorage.setItem('lastPhoto', newPath);
-                navigation.goBack(); // Wróć do poprzedniego ekranu
+                const info = await AsyncStorage.setItem('lastPhoto', newPath);
+                console.log("Async:", info);
+                navigation.goBack();
             } catch (e) {
                 console.error("Error taking picture:", e);
             }
@@ -64,7 +61,7 @@ export default function Cam({navigation}){
     }
     return(
         <View style={styles.container}>
-            <Camera key={cameraKey} style={styles.camera} type={type} ref={cameraRef} onCameraReady={onCameraReady}>
+            <Camera key={cameraKey} style={styles.camera} type={type} ref={cameraRef} >
                 <TouchableOpacity onPress={()=> navigation.navigate('IndividualChats')} style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>x</Text>
                 </TouchableOpacity>
