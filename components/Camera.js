@@ -35,7 +35,6 @@ export default function Cam({navigation}){
     }
 
     async function takePicture() {
-        console.log(cameraRef.current);
         if (cameraRef.current) {
             try {
                 const photo = await cameraRef.current.takePictureAsync();
@@ -46,8 +45,8 @@ export default function Cam({navigation}){
                     to: newPath
                 });
                 await AsyncStorage.setItem('lastPhoto', newPath);
-                const info = await AsyncStorage.setItem('lastPhoto', newPath);
-                console.log("Async:", info);
+
+                console.log("Photo saved at:", newPath);
                 navigation.goBack();
             } catch (e) {
                 console.error("Error taking picture:", e);

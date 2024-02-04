@@ -1,12 +1,14 @@
-import React, { useEffect, useCallback, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useCallback, useState, useLayoutEffect} from 'react';
 import { View, Text, Dimensions, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Avatar } from 'react-native-elements';
-import { GiftedChat } from 'react-native-gifted-chat';
+import {Composer, GiftedChat, InputToolbar} from 'react-native-gifted-chat';
 import { collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { auth, db } from '../firebase';
+import { auth, db, storage } from '../firebase'; // Załóż, że `storage` jest już zdefiniowane w pliku firebase.js
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import HeaderForDrawer from './headerForDrawer';
+import {useFocusEffect} from "@react-navigation/native";
 const window = Dimensions.get('window');
 
 
@@ -15,6 +17,26 @@ const SpecIndividual = ({ navigation, route }) => {
     const { chatId } = route.params;
     const [messages, setMessages] = useState([]);
     const [chatTitle, setChatTitle] = useState('');
+    {/*const [pictureStyle, setPictureStyle] = useState(false);
+    const [photoUri, setLastPhotoUri] = useState(null);*/}
+
+
+
+    useFocusEffect(
+        useCallback(() => {
+            const fetchLastPhoto = async () => {
+                const lastPhotoUri = String(await AsyncStorage.getItem('lastPhoto'));
+                if (lastPhotoUri) {
+                    console.log("last photo z onPictureTaken: ", lastPhotoUri);
+                    {/*setLastPhotoUri(lastPhotoUri);
+                    setPictureStyle(true);*/}
+                }
+            };
+
+            fetchLastPhoto().catch(console.error);
+        }, [])
+    );
+
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -43,6 +65,7 @@ const SpecIndividual = ({ navigation, route }) => {
 
     }, [chatId]);
 
+
     useEffect(()=>{
         const fetchChatDetails = async () => {
             const chatRef = doc(db, 'chats', chatId);
@@ -67,13 +90,19 @@ const SpecIndividual = ({ navigation, route }) => {
     }, [chatId, navigation]);
 
     const onSend = useCallback(async (messages = []) => {
-        const { _id, createdAt, text, user, location } = messages[0];
+        let { _id, createdAt, text, user, location } = messages[0];
+
+
         let messageData = { _id, createdAt, text, user };
 
         const photoUri = await AsyncStorage.getItem('lastPhoto');
+        console.log("SPEC photo uri", photoUri);
         if (photoUri) {
             messageData.image = photoUri;
             await AsyncStorage.removeItem('lastPhoto');
+            {/*setPictureStyle(false);
+            setLastPhotoUri("");*/}
+
         }
         if (location) {
             messageData.location = location;
@@ -92,22 +121,24 @@ const SpecIndividual = ({ navigation, route }) => {
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 5 }}>
             <TouchableOpacity
                 style={{ marginRight: 5, padding: 2.5 }}
-                onPress={() => navigation.navigate('Camera', {
-                    onPictureTaken: async (photoUrl) => {
-                        await AsyncStorage.setItem('lastPhoto', photoUrl);
-                        // dodać logikę wysyłania zdjęc
-                    },
-                })}
-            >
-                <Icon name="camera" size={36} color="#000" />
+                onPress={() => navigation.navigate('Camera')}>
+                    <Icon name="camera" size={36} color="#000" />
             </TouchableOpacity>
             <TouchableOpacity
                 style={{ marginRight: 5, padding: 2.5 }}
                 onPress={() => navigation.navigate('Map', { /* Logika wyboru lokalizacji */ })}>
-                <Icon name="map-marker-alt" size={36} color="#000" />
+                    <Icon name="map-marker-alt" size={36} color="#000" />
             </TouchableOpacity>
+            {/* {pictureStyle && photoUri && (
+                <Image
+                    source={{ uri: photoUri }}
+                    style={{ width: 40, height: 40, marginHorizontal: 4 }}
+                />
+            )} */}
+
         </View>
     );
+
 
     return (
         <View style={{ flex: 1, backgroundColor: '#F1F1F1' }}>
@@ -116,9 +147,9 @@ const SpecIndividual = ({ navigation, route }) => {
                 <View style={{ paddingTop: 5, paddingBottom: 5, backgroundColor: 'gray', alignItems: 'center' }}>
                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{chatTitle}</Text>
                 </View>
-
                 <GiftedChat
                     messages={messages}
+                    //photoStyle={pictureStyle}
                     onSend={messages => onSend(messages)}
                     user={{
                         _id: auth?.currentUser?.email,
@@ -126,6 +157,22 @@ const SpecIndividual = ({ navigation, route }) => {
                         avatar: auth?.currentUser?.photoURL,
                     }}
                     renderActions={renderActions}
+                    renderComposer={(props) => {
+                        return (
+                            <Composer
+                                {...props}
+                                textInputStyle={{
+                                    color: 'black',
+                                    backgroundColor: '#F4F4F4',
+                                    borderRadius: 15,
+                                    padding: 10,
+                                    margin:10,
+                                    marginBottom:5,
+                                    marginTop:5,
+                                }}
+                            />
+                        );
+                    }}
                 />
             </View>
         </View>
