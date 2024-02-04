@@ -109,7 +109,7 @@ export default function AddUser({ navigation }) {
                     </View>
                 </View>
                 <View style={styles.containerAddButtons}>
-                    <Pressable style={styles.buttonsAddUser} onPress={()=> navigation.navigate('MainList')}>
+                    <Pressable style={styles.buttonsAddUser} onPress={()=> navigation.goBack()}>
                         <Text style={styles.textButtonsAdd}>Cancel</Text>
                     </Pressable>
                     <Pressable style={styles.buttonsAddUser} onPress={handleAddFriend}>

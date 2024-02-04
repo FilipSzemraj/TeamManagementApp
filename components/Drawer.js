@@ -1,5 +1,6 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import MainList from './MainList';
+import GroupTasks from './GroupTasks';
 import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {
@@ -40,10 +41,8 @@ export default function MyDrawer({navigation}) {
               color: 'white'
             },
             }}>
-          <Drawer.Screen name="MainList" component={MainList} />
-          <Drawer.Screen name="It department" component={MainList} />
-          <Drawer.Screen name="Management" component={MainList} />
-          <Drawer.Screen name="Logistic" component={MainList} />
+          <Drawer.Screen name="Individual Tasks" component={MainList} />
+          <Drawer.Screen name="Group Tasks" component={GroupTasks} />
         </Drawer.Navigator>
     </View>
   );

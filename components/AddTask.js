@@ -3,7 +3,7 @@ import { View, KeyboardAvoidingView, Platform, Pressable, Alert, Text } from 're
 import HeaderForDrawer from './headerForDrawer';
 import { TextArea } from 'native-base';
 import { Dimensions } from 'react-native';
-import { Select, CheckIcon, Image } from "native-base";
+import { Select, CheckIcon, Image, Checkbox } from "native-base";
 import {styles} from './style';
 import { db } from '../firebase';
 import { getAuth } from 'firebase/auth';
@@ -11,11 +11,10 @@ import { Calendar } from 'react-native-calendars';
 import { Keyboard } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { collection, addDoc } from 'firebase/firestore'; 
+import { collection, addDoc, query, where, getDocs  } from 'firebase/firestore';
 const window = Dimensions.get('window');
 
 export default function AddTask({ navigation }) {
-const [service, setService] = React.useState("");
 const [showCalendar, setShowCalendar] = React.useState(false);
 const [showMenu, setShowMenu] = React.useState(false);
 const [showPriority, setShowPriority] = React.useState(false);
@@ -24,7 +23,9 @@ const [taskDate, setTaskDate] = React.useState("");
 const [showPicker, setShowPicker] = React.useState(false);
 const [reminderTime, setReminderTime] = React.useState(new Date());
 const [priority, setPriority] = React.useState(1);
-
+const [groups, setGroups] = React.useState([]);
+const [selectedGroup, setSelectedGroup] = React.useState(null);
+const [isTaskForGroup, setIsTaskForGroup] = React.useState(false);
 
 const toggleMenu = () => {
   Keyboard.dismiss();
@@ -65,20 +66,26 @@ const onChange = (event, selectedDate) => {
 };
 
 const addTask = async ()=>{
-    try{
-    const userAuth = getAuth();
-    const userId = userAuth.currentUser ? userAuth.currentUser.uid : null;
-    
-    const newTask = {
-        name:newTaskName,
-        completed:false,
-        date:taskDate,
-        priority: priority,
-    }
-    
-    if (!userId) {
-      console.error('No authenticated user found');
+  const newTask = {
+    name: newTaskName,
+    completed: false,
+    date: taskDate,
+    priority: priority,
+  };
+
+  try {
+    if (isTaskForGroup && selectedGroup) {
+      await addDoc(collection(db, 'groups', selectedGroup, 'tasks'), newTask);
+    } else {
+      const userAuth = getAuth();
+      const userId = userAuth.currentUser ? userAuth.currentUser.uid : null;
+      if (userId) {
+        await addDoc(collection(db, 'users', userId, 'tasks'), newTask);
+      }
+      else{
+        console.error('No authenticated user found');
         return;
+      }
     }
 
     if (newTaskName.length < 5) {
@@ -91,15 +98,36 @@ const addTask = async ()=>{
       return;
     }
 
-    await addDoc(collection(db, 'users', userId, 'tasks'), newTask);
-
     await scheduleNotification(newTaskName, taskDate);
     Alert.alert("Task added and reminder set!");
-    navigation.navigate('MainList');
+    navigation.goBack();
     }catch(error){
         console.error('Erorr during post new task',error)
     }
 }
+
+React.useEffect(() => {
+  const userAuth = getAuth();
+  const userId = userAuth.currentUser ? userAuth.currentUser.uid : null;
+
+  if (userId) {
+    const groupsRef = collection(db, 'groups');
+    const q = query(groupsRef, where(`members.${userId}`, '==', true));
+
+    getDocs(q).then(querySnapshot => {
+      const userGroups = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setGroups(userGroups);
+    }).catch(error => {
+      console.error("Error getting groups: ", error);
+      Alert.alert("Error getting groups");
+    });
+  }
+}, []);
+
+
   return (
     <View style={{ flex: 1 }}>
       <HeaderForDrawer navigation={navigation}/>
@@ -166,22 +194,41 @@ const addTask = async ()=>{
             <Image alt="calendar_img" source={require('../assets/images/calendar.png')}/>
           </Pressable>
           <Pressable onPress={togglePriority}>
-            <Image alt="priority_img" source={require('../assets/images/priority_menu.png')}/>
+            <Image alt="priority_img" source={require('../assets/images/Priority_menu.png')}/>
           </Pressable>
           <Pressable onPress={toggleMenu}>
             <Image alt="dots_img" source={require('../assets/images/dots_menu.png')}/>
           </Pressable>
         </View>
         <View style={styles.wrapperSelectAndImg}>
-            <Select selectedValue={service} minWidth="200" width={window.width*0.75} accessibilityLabel="Choose Member" placeholder="Choose Member" _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon style={{backgroundColor:'white'}} size="5" />
+        {isTaskForGroup ? (
+          <Select
+            selectedValue={selectedGroup}
+            minWidth="200"
+            width={window.width*0.75}
+            accessibilityLabel="Choose Group"
+            placeholder="Choose Group"
+            _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon style={{backgroundColor:'white'}} size="5" />
             }} 
-                mt={1} onValueChange={itemValue => setService(itemValue)}>
-                <Select.Item label="Filip Szemraj" value="ux" />
-                <Select.Item label="Tupac Shakur" value="web" />
-                <Select.Item label="Jakub Kubanczyk" value="cross" />
-            </Select>
+            mt={1}
+            onValueChange={itemValue => setSelectedGroup(itemValue)}
+          >
+            {groups.map(group => (
+              <Select.Item key={group.id} label={group.name} value={group.id} />
+            ))}
+          </Select>
+          ):
+          <Checkbox
+            isChecked={isTaskForGroup}
+            onChange={() => {
+              console.log('Checkbox is changed');
+              setIsTaskForGroup(!isTaskForGroup);
+            }}
+            value="isTaskForGroup"
+          ><Text>Is this task for a group?</Text>
+          </Checkbox>}
             <Pressable onPress={addTask}>
                 <Image alt="arrow-img" style={styles.arrowImg} source={require('../assets/images/arrow_top.png')}/>
             </Pressable>

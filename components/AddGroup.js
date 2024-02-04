@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, Text, KeyboardAvoidingView, Platform} from 'react-native';
+import { View, Text, KeyboardAvoidingView, Platform, Alert} from 'react-native';
 import HeaderForDrawer from './headerForDrawer';
 import { Dimensions } from 'react-native';
 import {styles} from './style';
 import {Pressable} from 'native-base';
 import { TextInput } from 'react-native';
-import { Select, CheckIcon, Image } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Keyboard } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { db } from '../firebase';
+import { getAuth } from 'firebase/auth';
+import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
+import { Checkbox } from 'native-base';
 const window = Dimensions.get('window');
 
 
@@ -16,84 +18,124 @@ export default function AddGroup({ navigation }) {
     const [service, setService] = React.useState("");
     const [showUpload, setShowUpload] = React.useState(false);
     const [friends, setFriends] = React.useState([]);
-
-    const fetchFriends = async () => {
-        try {
-          const friendsJson = await AsyncStorage.getItem('friends');
-          const friends = friendsJson != null ? JSON.parse(friendsJson) : [];
-          console.log(friends);
-          return friends;
-        } catch (error) {
-          console.error('Error fetching friends from AsyncStorage', error);
-          return [];
-        }
+    const [groupName, setGroupName] = React.useState("");
+    const [selectedFriends, setSelectedFriends] = React.useState([]);
+    
+    const fetchFriendDetails = async (friendUid) => {
+    const friendRef = doc(db, 'users', friendUid);
+    const friendSnap = await getDoc(friendRef);
+    
+    if (friendSnap.exists()) {
+        return { uid: friendUid, displayName: friendSnap.data().displayName };
+      } else {
+        console.error("No such friend!");
+        return { uid: friendUid, displayName: "Unknown" }; 
+      }
     };
     
+    const fetchAllFriends = async (friendUids) => {
+      const friendDetailsPromises = friendUids.map(friendUid => fetchFriendDetails(friendUid));
+      const friendDetails = await Promise.all(friendDetailsPromises);
+      setFriends(friendDetails);
+    };
     
     React.useEffect(() => {
-        const loadFriends = async () => {
-          const fetchedFriends = await fetchFriends();
-          setFriends(fetchedFriends);
-        };
-      
-        loadFriends();
+      const userAuth = getAuth();
+      const userId = userAuth.currentUser ? userAuth.currentUser.uid : null;
+    
+      if (userId) {
+        const userRef = doc(db, 'users', userId);
+        getDoc(userRef).then(userSnap => {
+          if (userSnap.exists()) {
+            const userData = userSnap.data();
+            const friendUids = userData.friendList || [];
+            fetchAllFriends(friendUids);
+          } else {
+            console.log("No such user document!");
+          }
+        });
+      }
     }, []);
-      
 
-    const toggleUpload = () => {
-        Keyboard.dismiss();
-        setShowUpload(!showUpload); 
-      };
+  const handleSelectFriend = (uid) => {
+    setSelectedFriends(prevSelected => {
+      if (prevSelected.includes(uid)) {
+        return prevSelected.filter(id => id !== uid);
+      } else {
+        return [...prevSelected, uid];
+      }
+    });
+  };
+ 
+  const createGroup = async () => {
+    if (selectedFriends.length === 0) {
+      Alert.alert("Please select friends to add to the group");
+      return;
+    }
+  
+    try {
+    const userAuth = getAuth();
+    const userId = userAuth.currentUser ? userAuth.currentUser.uid : null;
+
+    if (!userId) {
+      console.error("No authenticated user found");
+      return;
+    }
+
+    selectedFriends.push(userId);
+    
+      const groupRef = collection(db, 'groups');
+      await addDoc(groupRef, {
+        name: groupName,
+        members: selectedFriends.reduce((acc, uid) => ({ ...acc, [uid]: true }), {}),
+        photoUri: userAuth.currentUser.photoURL
+      });
+  
+      Alert.alert("Group created successfully!");
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error creating group', error);
+      Alert.alert("Error creating group");
+    }
+  };
+  
   return (
     <View style={{ flex: 1 }}>
-      <HeaderForDrawer navigation={navigation}/>
+      <HeaderForDrawer navigation={navigation} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: '#F1F1F1' }}
       >
-            <View style={styles.containerInputsAdd}>
-            <Text style={styles.textAddFriend}>Add new group</Text>
-                <View style={styles.containerInputAddFriend}>
-                    <TextInput style={styles.textNameFriend} placeholder='Enter group name'/>
-                </View>
-                <View style={styles.containerInputAddFriend}>
-                    <TextInput style={styles.textNameFriend} placeholder='Enter group location'/>
-                </View>
-                <View style={{marginTop:window.height*0.02 ,borderRadius:10, backgroundColor:'white'}}>
-                <Select
-                    selectedValue={service}
-                    minWidth="200"
-                    width={window.width*0.8}
-                    accessibilityLabel="Choose Members"
-                    placeholder="Choose Members"
-                    _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon style={{backgroundColor:'white'}} size="5" />
-                    }}
-                    mt={1}
-                    onValueChange={itemValue => setService(itemValue)}
-                >
-                    {friends.map((friend, index) => (
-                    <Select.Item style={{color:"black", backgroundColor:'white'}} key={index} label={friend.name} value={friend.name} />
-                    ))}
-                </Select>
-                </View>
-
-            </View>
-            <View style={styles.uploadContainer}>
-                <Pressable onPress={toggleUpload}>
-                    <Icon name="file-upload" size={40} color="black" />
-                </Pressable>
-                <Text style={styles.text}>Choose image for your team</Text>
-            </View>
-            <View style={styles.containerAddButtons}>
-                <Pressable style={styles.buttonsAddUser} onPress={()=> navigation.navigate('MainList')}>
-                    <Text style={styles.textButtonsAdd}>Cancel</Text>
-                </Pressable>
-                <Pressable style={styles.buttonsAddUser} onPress={()=> navigation.navigate('MainList')}>
-                    <Text style={styles.textButtonsAdd}>Enter</Text>
-                </Pressable>
-            </View>
+        <View style={styles.containerInputsAdd}>
+          <Text style={styles.textAddFriend}>Add new group</Text>
+          <View style={styles.containerInputAddFriend}>
+            <TextInput
+              style={styles.textNameFriend}
+              placeholder='Enter group name'
+              onChangeText={setGroupName}
+              value={groupName}
+            />
+          </View>
+          <View style={{marginTop:window.height*0.02,width: window.width*0.8,padding:10, borderRadius:10, backgroundColor:'white'}}>
+            {friends.map((friend, index) => (
+              <Checkbox
+                key={index}
+                isChecked={selectedFriends.includes(friend.uid)}
+                onChange={() => handleSelectFriend(friend.uid)}
+                value={friend.uid}>
+                <Text style={{padding: 5}}>{friend.displayName}</Text>
+              </Checkbox>
+            ))}
+          </View>
+        </View>
+        <View style={styles.containerAddButtons}>
+          <Pressable style={styles.buttonsAddUser} onPress={() => navigation.goBack()}>
+            <Text style={styles.textButtonsAdd}>Cancel</Text>
+          </Pressable>
+          <Pressable style={styles.buttonsAddUser} onPress={createGroup}>
+            <Text style={styles.textButtonsAdd}>Enter</Text>
+          </Pressable>
+        </View>
       </KeyboardAvoidingView>
     </View>
   );

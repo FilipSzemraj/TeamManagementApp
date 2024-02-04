@@ -401,4 +401,29 @@ headerLogo2:{
     marginRight: 20,
     resizeMode:'contain'
   },
+  groupContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    justifyContent: "flex-start",
+    padding: 10
+  },
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    elevation: 3,
+    marginBottom: 5,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#333333',
+  },
 });

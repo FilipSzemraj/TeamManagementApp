@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View, Image, Pressable,TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { Dimensions } from "react-native";
 import { RadioButton } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import { Calendar } from 'react-native-calendars';
 import { getAuth } from 'firebase/auth';
 import { db } from '../firebase';
 import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 const window = Dimensions.get("window");
 
 export default function MainList({ navigation }) {
@@ -72,14 +72,13 @@ export default function MainList({ navigation }) {
     }
   };
   
-  
   useFocusEffect(
     React.useCallback(() => {
       getData();
-    }, [taskDate,editableTask])
+    }, [taskDate,editableTask, tasks])
   );
 
-  const handleRadio = async (taskId) => {
+  const handleDelete = async (taskId) => {
     try {
       const taskRef = doc(db, 'users', loggedInUserId, 'tasks', taskId);
       await deleteDoc(taskRef);
@@ -88,6 +87,21 @@ export default function MainList({ navigation }) {
       console.error('Error while deleting task', error);
     }
   };
+    const renderTask = ({ item }) => (
+      <View style={styles.taskItem}>
+      <Text style={styles.taskTitle}>{item.name}</Text>
+      <View style={styles.actionsContainer}>
+          <RadioButton
+          value="checked"
+          status={'unchecked'}
+          onPress={() => handleDelete(item.id)}
+          />
+          <TouchableOpacity onPress={() => handleEdit(item)}>
+          <Icon name="edit" size={18} color="#000" />
+          </TouchableOpacity>
+      </View>
+      </View>
+    );
 
   return (
     <View style={styles.container}>
@@ -141,16 +155,11 @@ export default function MainList({ navigation }) {
       </View> : null
       }
       {tasks.length > 0 ? (
-        tasks.map((singleTask) => (
-          <Pressable key={singleTask.id} style={styles.row} onPress={() => handleEdit(singleTask)}>
-            <Text style={styles.text}>{singleTask.name}</Text>
-            <RadioButton
-              value="checked"
-              status={singleTask.completed ? 'checked' : 'unchecked'}
-              onPress={() => handleRadio(singleTask.id)}
-            />
-          </Pressable>
-        ))
+        <FlatList
+          data={tasks}
+          renderItem={renderTask}
+          keyExtractor={item => item.id}
+        />
       ) : (
         <Text style={styles.noTasks}>Brak zadań w tym dniu</Text>
       )}
@@ -167,25 +176,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     justifyContent: "flex-start",
     padding: 10
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    padding: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1,
-    elevation: 3,
-    marginBottom: 5,
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#333333',
   },
   addCircle: {
     position: 'absolute',
@@ -208,13 +198,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 20,
     color: '#666666',
-  },
-  editSection: {
-    padding: 10,
-    margin: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 5,
   },
   editModal: {
     position: 'absolute', 
@@ -264,5 +247,28 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#333',
+  },
+  taskItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    margin: 10,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    elevation: 3,
+  },
+  taskTitle: {
+    fontSize: 16,
+    flexShrink: 1,
+    maxWidth: window.width*0.8,
+  },
+  actionsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
