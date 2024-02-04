@@ -1,41 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, Text, TouchableOpacity } from 'react-native';
+import { View, FlatList, Text, TouchableOpacity, Image } from 'react-native';
 import { auth, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import HeaderForDrawer from './headerForDrawer'; // Załóżmy, że masz taki komponent
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+import HeaderForDrawer from './headerForDrawer';
 
 export default function IndividualChats({ navigation }) {
-    const [chats, setChats] = useState([]); // Stan na listę czatów
+    const [chats, setChats] = useState([]);
 
-    useEffect(() => {
-        const loadUserChats = async () => {
-            const userRef = doc(db, 'users', auth.currentUser.uid); // Referencja do dokumentu użytkownika
-            const docSnap = await getDoc(userRef);
+    useFocusEffect(
+        React.useCallback(() => {
+            const loadUserChats = async () => {
+                const currentUserUid = auth.currentUser.uid;
+                const userRef = doc(db, 'users', currentUserUid);
+                const docSnap = await getDoc(userRef);
 
-            if (docSnap.exists()) {
-                const userData = docSnap.data();
-                const chatIds = userData.chatList || []; // Pobieramy listę ID czatów z dokumentu użytkownika
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    const chatIds = userData.chatList || [];
 
-                // Pobieranie szczegółów dla każdego czatu
-                const chatDetailsPromises = chatIds.map(async (chatId) => {
-                    const chatRef = doc(db, 'chats', chatId);
-                    const chatSnap = await getDoc(chatRef);
-                    if (chatSnap.exists()) {
-                        return { id: chatSnap.id, ...chatSnap.data() };
-                    } else {
-                        return null; // W przypadku braku czatu, zwracamy null
-                    }
-                });
+                    const chatDetailsPromises = chatIds.map(async (chatId) => {
+                        const chatRef = doc(db, 'chats', chatId);
+                        const chatSnap = await getDoc(chatRef);
+                        if (chatSnap.exists()) {
+                            const chatData = chatSnap.data();
+                            // Zakładamy, że 'participants' zawiera dokładnie dwóch uczestników
+                            const otherUserId = chatData.participants.find(id => id !== currentUserUid);
+                            const otherUserRef = doc(db, 'users', otherUserId);
+                            const otherUserSnap = await getDoc(otherUserRef);
+                            let photoURL = "";
+                            if (otherUserSnap.exists()) {
+                                photoURL = otherUserSnap.data().photoURL;
+                            }
+                            return { id: chatSnap.id, ...chatData, photoURL };
+                        } else {
+                            return null;
+                        }
+                    });
 
-                const chatDetails = await Promise.all(chatDetailsPromises);
-                setChats(chatDetails.filter(chat => chat !== null)); // Aktualizacja stanu, filtrowanie null
-            } else {
-                console.log("No such document!");
-            }
-        };
+                    const chatDetails = await Promise.all(chatDetailsPromises);
+                    setChats(chatDetails.filter(chat => chat !== null));
+                } else {
+                    console.log("No such document!");
+                }
+            };
 
-        loadUserChats();
-    }, []);
+            loadUserChats();
+        }, [])
+    );
+
 
     return (
         <View style={{ flex: 1, backgroundColor: '#F1F1F1' }}>
@@ -46,14 +59,21 @@ export default function IndividualChats({ navigation }) {
                     keyExtractor={item => item.id}
                     renderItem={({ item }) => (
                         <TouchableOpacity
-                            style={{ padding: 20, borderBottomWidth: 1, borderBottomColor: '#ccc' }}
+                            style={{ flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderBottomColor: '#ccc', alignItems: 'center' }}
                             onPress={() => navigation.navigate('SpecIndividual', { chatId: item.id, chatName: item.name })}
                         >
-                            <Text style={{ fontWeight: 'bold' }}>{item.name || "Unnamed Chat"}</Text>
-                            <Text style={{ marginLeft: 20 }}>{item.lastMessage || ""}</Text>
+                            <Image
+                                source={{ uri: item.photoURL || 'https://via.placeholder.com/150' }} // Użyj domyślnego obrazu, jeśli photoURL jest pusty
+                                style={{ width: 50, height: 50, borderRadius: 25, marginRight: 10 }}
+                            />
+                            <View>
+                                <Text style={{ fontWeight: 'bold' }}>{item.name || "Unnamed Chat"}</Text>
+                                <Text style={{ marginLeft: 20 }}>{item.lastMessage || ""}</Text>
+                            </View>
                         </TouchableOpacity>
                     )}
                 />
+
             </View>
         </View>
     );

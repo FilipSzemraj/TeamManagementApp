@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useState, useLayoutEffect } from 'react'
 import { View, Text, Dimensions, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import { GiftedChat } from 'react-native-gifted-chat';
-import { collection, addDoc, query, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth, db } from '../firebase';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -14,7 +14,7 @@ const window = Dimensions.get('window');
 const SpecIndividual = ({ navigation, route }) => {
     const { chatId } = route.params;
     const [messages, setMessages] = useState([]);
-    const [chatTitle, setChatTitle] = useState(''); // Stan na tytuł czatu
+    const [chatTitle, setChatTitle] = useState('');
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -50,13 +50,12 @@ const SpecIndividual = ({ navigation, route }) => {
 
             if (chatSnap.exists()) {
                 const chatData = chatSnap.data();
-                // Aktualizacja tytułu czatu na pasku nawigacyjnym
-                //console.log(chatData.name);
-                setChatTitle(chatData.name); // Ustawianie tytułu czatu pobranego z Firestore
+
+                setChatTitle(chatData.name);
 
             }else {
                 console.log("No such document!");
-                setChatTitle("Nieznany Czat"); // Ustawienie domyślnego tytułu, gdy nie znaleziono dokumentu
+                setChatTitle("Nieznany Czat");
             }
         };
 
@@ -81,6 +80,12 @@ const SpecIndividual = ({ navigation, route }) => {
         }
 
         await addDoc(collection(db, `chats/${chatId}/messages`), messageData);
+
+        const chatRef = doc(db, 'chats', chatId);
+        await updateDoc(chatRef, {
+            lastMessage: text,
+            lastMessageCreatedAt: createdAt,
+        });
     }, [chatId]);
 
     const renderActions = () => (
@@ -90,7 +95,7 @@ const SpecIndividual = ({ navigation, route }) => {
                 onPress={() => navigation.navigate('Camera', {
                     onPictureTaken: async (photoUrl) => {
                         await AsyncStorage.setItem('lastPhoto', photoUrl);
-                        // Można tutaj dodać logikę, jeśli potrzebujesz bezpośrednio wysyłać zdjęcie
+                        // dodać logikę wysyłania zdjęc
                     },
                 })}
             >
