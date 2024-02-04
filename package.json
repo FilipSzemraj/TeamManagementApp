@@ -42,10 +42,13 @@
     "react": "18.2.0",
     "react-dom": "^18.2.0",
     "react-native": "0.72.6",
+    "react-native-base64": "^0.2.1",
     "react-native-calendars": "^1.1302.0",
     "react-native-datepicker": "^1.7.2",
     "react-native-elements": "^3.4.3",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.12.0",
+    "react-native-get-random-values": "^1.10.0",
     "react-native-gifted-chat": "^2.4.0",
     "react-native-image-picker": "^7.1.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
@@ -57,7 +60,8 @@
     "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
     "react-native-vector-icons": "^10.0.3",
-    "react-native-web": "^0.19.9"
+    "react-native-web": "^0.19.9",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
