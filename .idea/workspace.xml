@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="381ad747-41a5-41b0-86af-f567f79d46c2" name="Changes" comment="image name change">
+    <list default="true" id="381ad747-41a5-41b0-86af-f567f79d46c2" name="Changes" comment="individual chats">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/AddUser.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/AddUser.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/IndividualChats.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/IndividualChats.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Map.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Map.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/SpecIndividual.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/SpecIndividual.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/UserContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/UserContext.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/style.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/style.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firebase.js" beforeDir="false" afterPath="$PROJECT_DIR$/firebase.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +65,8 @@
       <workItem from="1706970646628" duration="583000" />
       <workItem from="1706971256272" duration="192000" />
       <workItem from="1706975882542" duration="599000" />
-      <workItem from="1706985439690" duration="17860000" />
+      <workItem from="1706985439690" duration="30979000" />
+      <workItem from="1707049481891" duration="18528000" />
     </task>
     <task id="LOCAL-00001" summary="pogrupowane czaty">
       <created>1707002887600</created>
@@ -85,7 +89,28 @@
       <option name="project" value="LOCAL" />
       <updated>1707003134137</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="individual chats">
+      <created>1707003778559</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1707003778559</updated>
+    </task>
+    <task id="LOCAL-00005" summary="individual chats">
+      <created>1707005318915</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1707005318915</updated>
+    </task>
+    <task id="LOCAL-00006" summary="individual chats">
+      <created>1707017185139</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1707017185139</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -106,6 +131,7 @@
     <MESSAGE value="grouped chats" />
     <MESSAGE value="pogrupowane czaty" />
     <MESSAGE value="image name change" />
-    <option name="LAST_COMMIT_MESSAGE" value="image name change" />
+    <MESSAGE value="individual chats" />
+    <option name="LAST_COMMIT_MESSAGE" value="individual chats" />
   </component>
 </project>

@@ -1,41 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, Dimensions, Image } from 'react-native';
-import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import colors from '../assets/colors/colors';
+import { useUserContext } from './UserContext';
 
 const window = Dimensions.get('window');
 
 export default function Map({ navigation, route }) {
+    const { handleLocationSelect } = useUserContext();
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [tasks, setTasks] = useState([]);
-    const [mapRegion, setMapRegion] = useState(null);
-    const handleLocationSelect = route.params?.handleLocationSelect;
+    const [mapRegion, setMapRegion] = useState({
+        latitude: 50.879212,
+        longitude: 20.639339,
+        latitudeDelta: 0.0222,
+        longitudeDelta: 0.0121,
+    });
+    const { location } = route.params || {};
 
     useEffect(() => {
-        const defaultRegion = {
-            latitude: 50.879212,
-            longitude: 20.639339,
+        // Ustawienie regionu mapy na podstawie przekazanej lokalizacji lub wartości domyślnej
+        setMapRegion({
+            latitude: location?.latitude || 50.879212,
+            longitude: location?.longitude || 20.639339,
             latitudeDelta: 0.0222,
             longitudeDelta: 0.0121,
-        };
-        setMapRegion(defaultRegion);
-    }, []);
-
-    useFocusEffect(
-        React.useCallback(() => {
-            const fetchData = async () => {
-                try {
-                    const response = await axios.get("http://172.20.10.7:3004/task");
-                    setTasks(response.data);
-                } catch (error) {
-                    console.error("Error while getting data", error);
-                }
-            };
-            fetchData();
-        }, [])
-    );
+        });
+    }, [location]);
 
     const renderMarkers = () => tasks.filter(task => task.location).map(task => (
         <Marker
@@ -60,14 +52,19 @@ export default function Map({ navigation, route }) {
                         title={"Wybrana lokalizacja"}
                     />
                 )}
+                {/* Dodanie markera dla przekazanej lokalizacji, jeśli istnieje */}
+                {location && (
+                    <Marker
+                        coordinate={location}
+                        title={location.name || "Przekazana lokalizacja"}
+                        pinColor="blue" // Możesz zmienić kolor pinezki, aby odróżnić
+                    />
+                )}
             </MapView>
             <TouchableOpacity
                 style={styles.addButton}
                 onPress={() => {
-                    console.log(selectedLocation);
-                    console.log(handleLocationSelect);
-                    if (selectedLocation && handleLocationSelect) {
-                        console.log("wyslano lokalizacje");
+                    if (selectedLocation) {
                         handleLocationSelect(selectedLocation.latitude, selectedLocation.longitude, "Wybrana lokalizacja");
                         navigation.goBack();
                     }

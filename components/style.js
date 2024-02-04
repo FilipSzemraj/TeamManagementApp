@@ -133,7 +133,8 @@ export const styles = StyleSheet.create({
      width: window.width*0.98, 
      height: window.height*0.23, 
      borderRadius: 20, 
-     margin: 5 
+     margin: 5,
+      resizeMode:'stretch',
   },
   wrapperSelectAndImg:{
     justifyContent:'space-between',
@@ -350,14 +351,14 @@ container2:{
 textHeader:{
     fontWeight: 'bold',
     color: '#ffffff',
-    fontSize: 20
+    fontSize: 19
 },
 headerLogo2:{
     width: window.width*0.29, 
     height: window.height*0.07, 
     borderRadius: 20, 
     margin: window.height*0.01,
-    
+    resizeMode:"stretch",
  },
  uploadContainer:{
     justifyContent:'space-evenly',
@@ -395,8 +396,8 @@ headerLogo2:{
     marginVertical: 5,
   },
   userPhoto: {
-    width: window.width*0.2,
-    height: window.height*0.1,
+    width: window.width*0.175,
+    height: window.height*0.085,
     borderRadius: 50,
     marginRight: 20,
     resizeMode:'contain'

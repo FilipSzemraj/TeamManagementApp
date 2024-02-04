@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
 import { auth } from "../firebase";
 
 const UserContext = createContext();
@@ -8,6 +7,7 @@ export const useUserContext = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
     const [userInfo, setUserInfo] = useState();
+    const [selectedLocation, setSelectedLocation] = useState(null);
 
     const [initializing, setInitializing] = useState(true);
 
@@ -18,13 +18,17 @@ export const UserProvider = ({ children }) => {
 
     useEffect(() => {
         const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-        return subscriber; 
+        return subscriber;
     }, []);
+
+    const handleLocationSelect = (latitude, longitude, name) => {
+        setSelectedLocation({ latitude, longitude, name });
+    };
 
     if (initializing) return null;
 
     return (
-        <UserContext.Provider value={{ userInfo, setUserInfo }}>
+        <UserContext.Provider value={{ userInfo, setUserInfo, selectedLocation, handleLocationSelect }}>
             {children}
         </UserContext.Provider>
     );
