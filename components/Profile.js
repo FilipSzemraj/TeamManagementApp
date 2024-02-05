@@ -21,8 +21,8 @@ export default function Profile() {
         <View style={{margin:window.height*0.03}}>
             <Text style={styles.infoTextProfile}>Name</Text>
             <Text style={styles.infoTextProfileSpecified}>{userInfo?.displayName}</Text>
-            <Text style={styles.infoTextProfile}>Specialization</Text>
-            <Text style={styles.infoTextProfileSpecified}>IT student</Text>
+            {/*<Text style={styles.infoTextProfile}>Specialization</Text>
+            <Text style={styles.infoTextProfileSpecified}>IT student</Text>*/}
             <Text style={styles.infoTextProfile}>Country</Text>
             <Text style={styles.infoTextProfileSpecified}>Poland</Text>
         </View>

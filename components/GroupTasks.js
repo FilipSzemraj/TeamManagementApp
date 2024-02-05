@@ -24,8 +24,9 @@ export default function GroupTasks({ navigation }) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [taskDate, setTaskDate] = React.useState(new Date().toISOString().split('T')[0]);
 
-  
+
   useEffect(() => {
+
     getData();
   }, [selectedGroup, taskDate]);
 
@@ -67,6 +68,7 @@ export default function GroupTasks({ navigation }) {
 
   
   useEffect(() => {
+
     if (userId) {
       const groupsRef = collection(db, 'groups');
       const q = query(groupsRef, where(`members.${userId}`, '==', true));

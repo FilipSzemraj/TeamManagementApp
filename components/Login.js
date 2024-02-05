@@ -56,18 +56,13 @@ export default function FormLogin({ navigation }) {
     return (
         <View style={styles.loginContainer}>
             <View style={styles.loginSection}>
-                {userInfo ? <Text>ID: {userInfo.uid}</Text> : null}
                 <GoogleSigninButton
                     size={GoogleSigninButton.Size.Wide}
                     color={GoogleSigninButton.Color.Dark}
                     onPress={signin}
                 />
                 <StatusBar style="auto" />
-                <View>
-                    <Pressable style={styles.overlapGroup} onPress={() => { navigation.navigate("Register") }}>
-                        <Text style={styles.textSignUp}>If you don't have account Sign Up here!</Text>
-                    </Pressable>
-                </View>
+
                 <Image
                     source={require('../assets/images/logo.png')}
                     style={styles.bigLogo}

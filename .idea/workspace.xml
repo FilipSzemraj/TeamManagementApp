@@ -4,15 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="381ad747-41a5-41b0-86af-f567f79d46c2" name="Changes" comment="individual chats">
+    <list default="true" id="381ad747-41a5-41b0-86af-f567f79d46c2" name="Changes" comment="Camera and localization with maps">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Map.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Map.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/AddGroup.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/AddGroup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/AddTask.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/AddTask.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Drawer.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Drawer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/GroupChats.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/GroupChats.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/GroupTasks.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/GroupTasks.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Informations.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Informations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Settings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/SpecGroup.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/SpecGroup.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/SpecIndividual.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/SpecIndividual.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Theme.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Theme.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/UserContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/UserContext.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/style.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/style.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/firebase.js" beforeDir="false" afterPath="$PROJECT_DIR$/firebase.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +73,7 @@
       <workItem from="1706971256272" duration="192000" />
       <workItem from="1706975882542" duration="599000" />
       <workItem from="1706985439690" duration="30979000" />
-      <workItem from="1707049481891" duration="18528000" />
+      <workItem from="1707049481891" duration="30306000" />
     </task>
     <task id="LOCAL-00001" summary="pogrupowane czaty">
       <created>1707002887600</created>
@@ -110,7 +117,14 @@
       <option name="project" value="LOCAL" />
       <updated>1707017185139</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Camera and localization with maps">
+      <created>1707087421605</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1707087421605</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -132,6 +146,7 @@
     <MESSAGE value="pogrupowane czaty" />
     <MESSAGE value="image name change" />
     <MESSAGE value="individual chats" />
-    <option name="LAST_COMMIT_MESSAGE" value="individual chats" />
+    <MESSAGE value="Camera and localization with maps" />
+    <option name="LAST_COMMIT_MESSAGE" value="Camera and localization with maps" />
   </component>
 </project>

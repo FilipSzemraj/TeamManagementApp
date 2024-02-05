@@ -28,7 +28,7 @@ export const UserProvider = ({ children }) => {
     if (initializing) return null;
 
     return (
-        <UserContext.Provider value={{ userInfo, setUserInfo, selectedLocation, handleLocationSelect }}>
+        <UserContext.Provider value={{ userInfo, setUserInfo, selectedLocation, handleLocationSelect, setSelectedLocation }}>
             {children}
         </UserContext.Provider>
     );

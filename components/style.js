@@ -27,6 +27,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'column',
     marginVertical: window.height * 0.02,
     position: 'relative',
+
   },
   textLogin: {
     color: '#000000',

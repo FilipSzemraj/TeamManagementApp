@@ -29,7 +29,7 @@ const SpecIndividual = ({ navigation, route }) => {
     const [messages, setMessages] = useState([]);
     const [chatTitle, setChatTitle] = useState('');
     const [permission, requestPermission] = Camera.useCameraPermissions();
-    const { selectedLocation } = useUserContext();
+    const { selectedLocation, setSelectedLocation } = useUserContext();
 
     {/*const [pictureStyle, setPictureStyle] = useState(false);
     const [photoUri, setLastPhotoUri] = useState(null);*/}
@@ -52,6 +52,7 @@ const SpecIndividual = ({ navigation, route }) => {
                 },
             };
 
+            setSelectedLocation(null);
             await onSend([newMessage]);
         }
     };

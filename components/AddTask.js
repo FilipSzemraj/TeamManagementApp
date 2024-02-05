@@ -194,7 +194,7 @@ React.useEffect(() => {
             <Image alt="calendar_img" source={require('../assets/images/calendar.png')}/>
           </Pressable>
           <Pressable onPress={togglePriority}>
-            <Image alt="priority_img" source={require('../assets/images/Priority_menu.png')}/>
+            <Image alt="priority_img" source={require('../assets/images/priority_menu.png')}/>
           </Pressable>
           <Pressable onPress={toggleMenu}>
             <Image alt="dots_img" source={require('../assets/images/dots_menu.png')}/>

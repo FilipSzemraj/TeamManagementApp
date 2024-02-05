@@ -1,60 +1,89 @@
-import React from 'react';
-import { View, Text, Dimensions} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, FlatList, Text, TouchableOpacity, Image } from 'react-native';
+import { auth, db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 import HeaderForDrawer from './headerForDrawer';
-import {styles} from './style';
-import { Pressable, Image } from 'native-base';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-const window = Dimensions.get('window');
 
-export default function GroupChats({navigation}) {
-  return (
-    <View style={{ flex: 1 ,backgroundColor:'#F1F1F1'}}>
-      <HeaderForDrawer navigation={navigation}/>
-        <View style={{flex:1,justifyContent:'flex-start'}}>
-            <View style={styles.wrapperChatPress}>
-                <Pressable style={styles.containerXChat} onPress={()=> navigation.navigate('MainList')}><Image alt="exit_img"source={require('../assets/images/exitButton.png')}/></Pressable>
-                <Pressable style={styles.containerPressChat} onPress={()=> navigation.navigate('IndividualChats')}><Text style={styles.textChatsNoLine}>Individual chats</Text></Pressable>
-                <Pressable style={styles.containerPressChat} onPress={()=> navigation.navigate('GroupChats')}><Text style={styles.textChatsLine}>Group chats</Text></Pressable>
-            </View>
-            <Text style={{backgroundColor:'white',margin:2,fontSize:16,width:window.width*1, textAlign:'center'}}>Name of the current chat</Text>
-            <View style={{flex:1,justifyContent:'flex-start'}}>
-            <View style={{backgroundColor:'white',flexDirection:'row',alignItems:'center',margin:1,borderRadius:15,height:window.height*0.09}}>
-                <Image alt="mess_img" style={styles.messImg} source={require('../assets/images/Team1.png')}/>
-                  <Text style={{width:window.width*0.67}}>What do you think about..</Text>
-                  <View style={{flexDirection:'column',alignItems:'center'}}>
-                  <Text style={{fontSize:9}}>16.12.2023</Text>
-                  <Icon name="envelope-open" size={20} color="black" />
-                  </View>
-              </View>
-              <View style={{backgroundColor:'white',flexDirection:'row',alignItems:'center',margin:1,borderRadius:15,height:window.height*0.09}}>
-                <Image alt="mess_img" style={styles.messImg} source={require('../assets/images/Team2.png')}/>
-                  <Text style={{width:window.width*0.67}}>Just hangin around...</Text>
-                  <View style={{flexDirection:'column',alignItems:'center'}}>
-                  <Text style={{fontSize:9}}>17.12.2023</Text>
-                  <Icon name="envelope-open" size={20} color="black" />
-                  </View>
-              </View>
-              <View style={{backgroundColor:'white',flexDirection:'row',alignItems:'center',margin:1,borderRadius:15,height:window.height*0.09}}>
-                <Image alt="mess_img" style={styles.messImg} source={require('../assets/images/Team3.png')}/>
-                  <Pressable onPress={()=> navigation.navigate('SpecGroup')}>
-                    <Text style={{width:window.width*0.67}}>Hola, como estas</Text>
-                  </Pressable>
-                  <View style={{flexDirection:'column',alignItems:'center'}}>
-                  <Text style={{fontSize:9}}>17.12.2023</Text>
-                  <Icon name="envelope" size={20} color="black" />
-                  </View>
-                  
-              </View>
-              <View style={{backgroundColor:'white',flexDirection:'row',alignItems:'center',margin:1,borderRadius:15,height:window.height*0.09}}>
-                <Image alt="mess_img" style={styles.messImg} source={require('../assets/images/Team4.png')}/>
-                  <Text style={{width:window.width*0.67}}>Muchas gracias afficion</Text>
-                  <View style={{flexDirection:'column',alignItems:'center'}}>
-                  <Text style={{fontSize:9}}>17.12.2023</Text>
-                  <Icon name="envelope-open" size={20} color="black" />
-                  </View>
-              </View>
+export default function GroupChats({ navigation }) {
+    const [chats, setChats] = useState([]);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const loadUserChats = async () => {
+                const currentUserUid = auth.currentUser.uid;
+                const userRef = doc(db, 'users', currentUserUid);
+                const docSnap = await getDoc(userRef);
+
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    const groupIds = userData.groupChatList || [];
+
+                    // Najpierw pobierz identyfikatory czatów z dokumentów grup na podstawie identyfikatorów grup
+                    const chatIdsPromises = groupIds.map(async (groupId) => {
+                        const groupRef = doc(db, 'groups', groupId);
+                        const groupSnap = await getDoc(groupRef);
+                        if (groupSnap.exists() && groupSnap.data().chatId) {
+                            // Zwróć identyfikator czatu zapisany w dokumencie grupy
+                            return groupSnap.data().chatId;
+                        } else {
+                            return null;
+                        }
+                    });
+
+                    const chatIds = (await Promise.all(chatIdsPromises)).filter(id => id !== null);
+
+                    // Następnie, dla każdego identyfikatora czatu, pobierz szczegóły czatu
+                    const chatDetailsPromises = chatIds.map(async (chatId) => {
+                        const chatRef = doc(db, 'chats', chatId);
+                        const chatSnap = await getDoc(chatRef);
+                        if (chatSnap.exists()) {
+                            const chatData = chatSnap.data();
+                            return { id: chatSnap.id, ...chatData };
+                        } else {
+                            return null;
+                        }
+                    });
+
+                    const chatDetails = await Promise.all(chatDetailsPromises);
+                    // Filtrujemy, aby usunąć null i zachować tylko istniejące czaty
+                    setChats(chatDetails.filter(chat => chat !== null));
+                } else {
+                    console.log("No such document!");
+                }
+            };
+
+            loadUserChats();
+        }, [])
+    );
+
+
+
+    return (
+        <View style={{ flex: 1, backgroundColor: '#F1F1F1' }}>
+            <HeaderForDrawer navigation={navigation} />
+            <View style={{ flex: 1 }}>
+                <FlatList
+                    data={chats}
+                    keyExtractor={item => item.id}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={{ flexDirection: 'row', padding: 20, borderBottomWidth: 1, borderBottomColor: '#ccc', alignItems: 'center' }}
+                            onPress={() => navigation.navigate('SpecGroup', { chatId: item.id, chatName: item.name })}
+                        >
+                            <Image
+                                source={{ uri: item.photoURL || 'https://via.placeholder.com/150' }}
+                                style={{ width: 50, height: 50, borderRadius: 25, marginRight: 10 }}
+                            />
+                            <View>
+                                <Text style={{ fontWeight: 'bold' }}>{item.name || "Unnamed Chat"}</Text>
+                                <Text style={{ marginLeft: 20 }}>{item.lastMessage || ""}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                />
+
             </View>
         </View>
-    </View>
-  );
+    );
 }

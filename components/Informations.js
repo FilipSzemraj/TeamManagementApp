@@ -30,7 +30,7 @@ export default function Settings({navigation}) {
       </View>
       <View style={{flex: 0.7, backgroundColor:'#F1F1F1', justifyContent:'flex-end'}}>
         <View style={{alignItems:'center'}}>
-          <Text style={{color:'#838383', fontSize:14}}>Zalogowano jako {userInfo.user.email}</Text>
+          <Text style={{color:'#838383', fontSize:14}}>Zalogowano jako {userInfo.email}</Text>
         </View>
       </View>
     </View>

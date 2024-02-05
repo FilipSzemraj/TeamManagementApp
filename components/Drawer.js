@@ -21,7 +21,7 @@ export default function MyDrawer({navigation}) {
             <DrawerItem label="" icon = {()=> <Icon name="user-plus" size={30} color="black" />} onPress={() => navigation.navigate("AddUser")} />
             <DrawerItem label="" icon = {()=> <Icon name="users" size={30} color="black" />} onPress={() => navigation.navigate("AddGroup")} />
             <DrawerItem label="" icon = {()=> <Icon name="comment-dots" size={30} color="black" />} onPress={() => navigation.navigate("IndividualChats")} />
-            <DrawerItem label="" icon = {()=> <Icon name="sticky-note" size={30} color="black" />} onPress={() => navigation.navigate("Login")} />
+            <DrawerItem label="" icon = {()=> <Icon name="comments" size={30} color="black" />} onPress={() => navigation.navigate("GroupChats")} />
             <DrawerItem label="" icon = {()=> <Icon name="map-marked-alt" size={30} color="black" />} onPress={() => navigation.navigate("Map")} />
           </DrawerContentScrollView>
         );

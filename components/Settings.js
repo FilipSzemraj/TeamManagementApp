@@ -15,8 +15,8 @@ export default function Settings({navigation}) {
         try {
             await GoogleSignin.revokeAccess();
             await GoogleSignin.signOut();
-            setUserInfo(); // Resetowanie stanu użytkownika
-            navigation.popToTop(); // Przekierowanie do głównego ekranu
+            setUserInfo();
+            navigation.popToTop();
         } catch (error) {
             console.error(error);
         }
