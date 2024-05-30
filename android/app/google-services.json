@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "643427365202",
+    "project_id": "whalenotes-8848a",
+    "storage_bucket": "whalenotes-8848a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643427365202:android:7348add7d7b142d709ca8b",
+        "android_client_info": {
+          "package_name": "com.filipszemraj.WhaleNotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "643427365202-l6i0qr49k61lcgj4hmlb7uj39jl0g3uo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.filipszemraj.WhaleNotes",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "643427365202-krkh6gq39gh7d6s8lfgp84mbf5ddavu3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGY7uksMLae-4lWr9vlgMJ91Gw8GBEuug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "643427365202-krkh6gq39gh7d6s8lfgp84mbf5ddavu3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "643427365202-h38a4mfq7hncic3p9p3ead604ins1hh6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.filipszemraj.WhaleNotes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
